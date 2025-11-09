@@ -1,66 +1,138 @@
-<html>
 <title>Hardest Part of the Sport!</title>
 <header>
 </header>
 <style>
-  body{
-    background-color: black;
-    color: white;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
+    body {
+        background-color: black;
+        color: white;
+        width: 100%;
+    }
 
-  .scoreBox{
-    border-radius: 5px;
-    border-width: 5px;
-    border-color: white;
-    border-style: solid;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 49%;
-    min-width: 400px;
-  }
-  .scoreInput{
-    text-align: center;
-    font-weight: bolder;
-    background-color: inherit;
-    color: inherit;
-    height: 80%;
-    width: 80%;
-    font-size: 80%;
-    min-width: 400px;
-    min-height: 800px;
-    size: 80%;
-  }
-  .footer{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-  .footerElement{
-    width: 25%;
-    border-width: 2px;
-    border-color: white;
-    border-style: solid;
-  }
+    .scoreBox {
+        border-radius: 5px;
+        border-width: 5px;
+        border-color: white;
+        border-style: solid;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        height: 100%;
+        flex-direction: column;
+    }
+
+    .scoreInput {
+        text-align: center;
+        font-weight: bolder;
+        background-color: black;
+        color: white;
+        width: 49%;
+        font-size: calc(10rem + 5vw);
+        margin:auto;
+        /*    min-width: 400px;
+    min-height: 200px;*/
+    }
+
+    .footer {
+        width: 99%;
+        height: 8%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .footerElement {
+        width: 25%;
+        border-width: 2px;
+        border-color: white;
+        border-style: solid;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+        font-size: larger;
+        align-items: center;
+    }
+
+    .scorebtn {
+        width: 100%;
+        font-size: 1.5em;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        width: 99%;
+        height: 80%;
+    }
+    .currentServer{
+        background-color: white;
+        color:black;
+    }
 </style>
+<html>
 <body>
-    <div class='scoreBox'>
-        <input type="button" value="&#8593;" />
-        <input type="button" value="&#8595;" />
-        <input class="scoreInput" readonly id="leftSide" value="0">
+    <div class="flex-row">
+        <div class='scoreBox'>
+            <input class="scorebtn" type="button" value="&#8593;" onclick="UpScore('leftSide')"/>
+            <p class="scoreInput" readonly id="leftSide">0</p>
+            <input class="scorebtn" type="button" value="&#8595;" onclick="DownScore('leftSide')"/>
+        </div>
+        <div class='scoreBox'>
+            <input class="scorebtn" type="button" value="&#8593;" onclick="UpScore('rightSide')"/>
+            <p class="scoreInput" readonly id="rightSide">0</p>
+            <input class="scorebtn" type="button" value="&#8595;" onclick="DownScore('rightSide')"/>
+        </div>
+
     </div>
-  <div class='scoreBox'>
-    <input class="scoreInput"  readonly id="rightSide" value="0">
-  </div>
+    <br />
+    <div class="footer">
+        <div class="footerElement currentServer" id="1">1st Server</div>
+        <div class="footerElement" id="2">2nd Server</div>
+        <div class="footerElement" id="3">1st Server</div>
+        <div class="footerElement" id="4">2nd Server</div>
+    </div>
+    <div style="width:100%; display:block; align-content:center; height:9%;">
+        <input class="scorebtn" type="button" value="Next Server!" onclick="NextServer()"/>
+    </div>
 </body>
-<div class="footer">
-  <div class="footerElement" id="1" hidden="false">1st Server</div>
-  <div class="footerElement" id="2" hidden="true">2nd Server</div>
-  <div class="footerElement" id="3" hidden="true">1st Server</div>
-  <div class="footerElement" id="4" hidden="true">2nd Server</div>
-</div>
 </html>
+<script>
+    function UpScore(side)
+    {
+        var sideEle = document.getElementById(side);
+        var currentScore = parseInt(sideEle.innerHTML);
+        currentScore += 1;
+        sideEle.innerHTML = currentScore.toString();
+    }
+    function DownScore(side) {
+        debugger;
+        var sideEle = document.getElementById(side);
+        var currentScore = parseInt(sideEle.innerHTML);
+        currentScore -= 1;
+        sideEle.innerHTML = currentScore.toString();
+    }
+    function NextServer()
+    {
+        var current = document.getElementsByClassName("currentServer")[0];
+        current.classList.remove("currentServer");
+        if (current.id == "1") {
+            document.getElementById("2").classList.add("currentServer");
+        }
+        else if (current.id == "2") {
+            document.getElementById("3").classList.add("currentServer");
+        }
+        else if (current.id == "3") {
+            document.getElementById("4").classList.add("currentServer");
+        }
+        else if (current.id == "4") {
+            document.getElementById("1").classList.add("currentServer");
+        }
+    }
+</script>
+
+<!--
+
+<span id="left11">&#8592;</span>
+    span id="left12">&#8594;</span>
+-->
