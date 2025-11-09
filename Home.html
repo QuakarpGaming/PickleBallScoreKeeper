@@ -1,0 +1,66 @@
+<html>
+<title>Hardest Part of the Sport!</title>
+<header>
+</header>
+<style>
+  body{
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .scoreBox{
+    border-radius: 5px;
+    border-width: 5px;
+    border-color: white;
+    border-style: solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 49%;
+    min-width: 400px;
+  }
+  .scoreInput{
+    text-align: center;
+    font-weight: bolder;
+    background-color: inherit;
+    color: inherit;
+    height: 80%;
+    width: 80%;
+    font-size: 80%;
+    min-width: 400px;
+    min-height: 800px;
+    size: 80%;
+  }
+  .footer{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .footerElement{
+    width: 25%;
+    border-width: 2px;
+    border-color: white;
+    border-style: solid;
+  }
+</style>
+<body>
+    <div class='scoreBox'>
+        <input type="button" value="&#8593;" />
+        <input type="button" value="&#8595;" />
+        <input class="scoreInput" readonly id="leftSide" value="0">
+    </div>
+  <div class='scoreBox'>
+    <input class="scoreInput"  readonly id="rightSide" value="0">
+  </div>
+</body>
+<div class="footer">
+  <div class="footerElement" id="1" hidden="false">1st Server</div>
+  <div class="footerElement" id="2" hidden="true">2nd Server</div>
+  <div class="footerElement" id="3" hidden="true">1st Server</div>
+  <div class="footerElement" id="4" hidden="true">2nd Server</div>
+</div>
+</html>
