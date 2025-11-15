@@ -6,6 +6,7 @@
         background-color: black;
         color: white;
         width: 100%;
+        overflow:hidden;
     }
 
     .scoreBox {
@@ -27,15 +28,23 @@
         background-color: black;
         color: white;
         width: 49%;
-        font-size: calc(10rem + 5vw);
+        font-size: 25vw;
         margin:auto;
-        /*    min-width: 400px;
-    min-height: 200px;*/
+    }
+
+    .scoreInput-full {
+        text-align: center;
+        font-weight: bolder;
+        background-color: black;
+        color: white;
+        width: 49%;
+        font-size: 35vw;
+        margin: auto;
     }
 
     .footer {
         width: 99%;
-        height: 8%;
+        height: fit-content;
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -50,16 +59,34 @@
         display: flex;
         justify-content: center;
         flex-wrap: nowrap;
-        font-size: larger;
+        font-size: 5vw;
+        align-items: center;
+    }
+    .footerElement-full {
+        width: 25%;
+        border-width: 2px;
+        border-color: white;
+        border-style: solid;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+        font-size: calc(5rem + 5vw);
         align-items: center;
     }
 
     .scorebtn {
         width: 100%;
-        font-size: 1.5em;
+        font-size: 3vw;
     }
 
-    .flex-row {
+    .flex-row-Top {
+        display: flex;
+        flex-direction: row;
+        width: 99%;
+        height: 60%;
+    }
+    .flex-row-Top-full {
         display: flex;
         flex-direction: row;
         width: 99%;
@@ -69,19 +96,85 @@
         background-color: white;
         color:black;
     }
+    .phone{
+        display: none;
+    }
+    .desktop {
+        display: flex;
+    }
+    .flex-row-Bot {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 20%;
+        justify-content:center;
+    }
+    .col-2{
+        width:49%;
+        margin:1em;
+    }
+    .arrow-btn{
+        margin-bottom: 2vw;
+    }
+    .team-name{
+        display:flex;
+    }
+    @media only screen and (hover: none) and (pointer: coarse) {
+        .scoreInput {
+            text-align: center;
+            font-weight: bolder;
+            background-color: black;
+            color: white;
+            width: 49%;
+            font-size: 20vw;
+            margin: auto;
+        }
+        .flex-row-Top {
+            display: flex;
+            flex-direction: row;
+            width: 99%;
+            height: 80%;
+        }
+        .phone{
+            display:flex;
+        }
+        .desktop{
+            display:none;
+        }
+        .flex-row-Bot {
+            display:none;
+        }
+        .footerElement {
+            width: 25%;
+            border-width: 2px;
+            border-color: white;
+            border-style: solid;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            font-size: larger;
+            align-items: center;
+        }
+        .arrow-btn {
+        }
+        .team-name {
+            display: none;
+        }
+    }
 </style>
 <html>
 <body>
-    <div class="flex-row">
+    <div class="flex-row-Top">
         <div class='scoreBox'>
-            <input class="scorebtn" type="button" value="&#8593;" onclick="UpScore('leftSide')"/>
+            <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('leftSide')"/>
             <p class="scoreInput" readonly id="leftSide">0</p>
-            <input class="scorebtn" type="button" value="&#8595;" onclick="DownScore('leftSide')"/>
+            <input class="scorebtn phone" type="button" value="&#8595;" onclick="DownScore('leftSide')"/>
         </div>
         <div class='scoreBox'>
-            <input class="scorebtn" type="button" value="&#8593;" onclick="UpScore('rightSide')"/>
+            <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('rightSide')"/>
             <p class="scoreInput" readonly id="rightSide">0</p>
-            <input class="scorebtn" type="button" value="&#8595;" onclick="DownScore('rightSide')"/>
+            <input class="scorebtn phone" type="button" value="&#8595;" onclick="DownScore('rightSide')"/>
         </div>
 
     </div>
@@ -93,11 +186,128 @@
         <div class="footerElement" id="4">2nd Server</div>
     </div>
     <div style="width:100%; display:block; align-content:center; height:9%;">
-        <input class="scorebtn" type="button" value="Next Server!" onclick="NextServer()"/>
+        <input class="scorebtn" id ="NS" type="button" value="Next Server!" onclick="NextServer()"/>
+    </div>
+    <div class="flex-row-Bot">
+        <div class="col-2">
+            <input class="scorebtn desktop arrow-btn" type="button" value="&#8593;" onclick="UpScore('leftSide')" />
+            <input class="scorebtn desktop arrow-btn" type="button" value="&#8595;" onclick="DownScore('leftSide')" />
+        </div>
+        <div class="col-2">
+            <input class="scorebtn desktop arrow-btn" type="button" value="&#8593;" onclick="UpScore('rightSide')" />
+            <input class="scorebtn desktop arrow-btn" type="button" value="&#8595;" onclick="DownScore('rightSide')" />
+        </div>
     </div>
 </body>
 </html>
 <script>
+    var hideBtns = true;
+    //var SideOut = new Audio("./fart-with-reverb.mp3");
+    document.addEventListener("DOMContentLoaded", (event) => {
+        var localHideBtns = window.localStorage.getItem("btns");
+        debugger;
+        if (localHideBtns != null) {
+            debugger;
+            hideBtns = localHideBtns !== "true";
+            KeyPress("Escape");
+        }
+    });
+    document.addEventListener("keydown", KeyPress)
+    function KeyPress(e) {
+        if (e.code === "Numpad7" || e.code === "KeyQ" || e.code === "Digit1") {
+            UpScore('leftSide');
+        }
+        else if (e.code === "Numpad4" || e.code === "KeyA" || e.code === "Digit2") {
+            DownScore('leftSide');
+        }
+        else if (e.code === "Numpad9" || e.code === "KeyW" || e.code === "Digit3") {
+            UpScore('rightSide');
+        } else if (e.code === "Numpad6" || e.code === "KeyS" || e.code === "Digit4") {
+            DownScore('rightSide');
+        }
+        else if (e.code === "Space") {
+            NextServer();
+        }
+        else if (e.code === "ArrowUp") {
+            var currentServer = document.getElementsByClassName("currentServer")[0].id;
+            if (currentServer === "1" || currentServer === "2") {
+                UpScore('leftSide');
+            }
+            else {
+                UpScore('rightSide');
+            }
+        }
+        else if (e.code === "ArrowDown") {
+            var currentServer = document.getElementsByClassName("currentServer")[0].id;
+            if (currentServer === "1" || currentServer === "2") {
+                DownScore('leftSide');
+            }
+            else {
+                DownScore('rightSide');
+            }
+        }
+        else if (e.code === "ArrowRight") {
+            NextServer();
+        }
+        else if (e.code === "ArrowLeft") {
+            LastServer();
+        }
+        else if (e.code === "Backquote" || e.code === "Escape" || e === "Escape")
+        {
+            var btns = document.getElementsByClassName("scorebtn desktop arrow-btn");;
+            for (var i = 0; i < btns.length; i++) {
+               
+                if (hideBtns) {
+                    btns[i].style.display = "none"
+                }
+                else {
+                    btns[i].style.display = "flex"
+                }
+            }
+            if (hideBtns) {
+                document.getElementById("NS").style.display = "none"
+                var boxes = document.getElementsByClassName("flex-row-Top");
+                while(boxes.length != 0) {
+                    boxes[boxes.length-1].classList.add("flex-row-Top-full");
+                    boxes[boxes.length - 1].classList.remove("flex-row-Top");
+                }
+
+                var scores = document.getElementsByClassName("scoreInput")
+                while (scores.length != 0) {
+                    scores[scores.length - 1].classList.add("scoreInput-full");
+                    scores[scores.length - 1].classList.remove("scoreInput");
+                }
+
+                var footerText = document.getElementsByClassName("footerElement");
+                while (footerText.length != 0) {
+                    footerText[footerText.length - 1].classList.add("footerElement-full");
+                    footerText[footerText.length - 1].classList.remove("footerElement");
+                }
+            }
+            else {
+                document.getElementById("NS").style.display = "flex"
+                var boxes = document.getElementsByClassName("flex-row-Top-full");
+                while (boxes.length != 0) {
+                    boxes[boxes.length - 1].classList.add("flex-row-Top");
+                    boxes[boxes.length - 1].classList.remove("flex-row-Top-full");
+                }
+
+                var scores = document.getElementsByClassName("scoreInput-full")
+                while (scores.length != 0) {
+                    scores[scores.length - 1].classList.add("scoreInput");
+                    scores[scores.length - 1].classList.remove("scoreInput-full");
+                }
+
+                var footerText = document.getElementsByClassName("footerElement-full");
+                while (footerText.length != 0) {
+                    footerText[footerText.length - 1].classList.add("footerElement");
+                    footerText[footerText.length - 1].classList.remove("footerElement-full");
+                }
+            }
+            hideBtns = !hideBtns;
+            window.localStorage.setItem("btns",hideBtns)
+        }
+    }
     function UpScore(side)
     {
         var sideEle = document.getElementById(side);
@@ -106,7 +316,6 @@
         sideEle.innerHTML = currentScore.toString();
     }
     function DownScore(side) {
-        debugger;
         var sideEle = document.getElementById(side);
         var currentScore = parseInt(sideEle.innerHTML);
         currentScore -= 1;
@@ -120,13 +329,31 @@
             document.getElementById("2").classList.add("currentServer");
         }
         else if (current.id == "2") {
+        //    SideOut.play();
             document.getElementById("3").classList.add("currentServer");
         }
         else if (current.id == "3") {
             document.getElementById("4").classList.add("currentServer");
         }
         else if (current.id == "4") {
+        //    SideOut.play();
             document.getElementById("1").classList.add("currentServer");
+        }
+    }
+    function LastServer() {
+        var current = document.getElementsByClassName("currentServer")[0];
+        current.classList.remove("currentServer");
+        if (current.id == "1") {
+            document.getElementById("4").classList.add("currentServer");
+        }
+        else if (current.id == "2") {
+            document.getElementById("1").classList.add("currentServer");
+        }
+        else if (current.id == "3") {
+            document.getElementById("2").classList.add("currentServer");
+        }
+        else if (current.id == "4") {
+            document.getElementById("3").classList.add("currentServer");
         }
     }
 </script>
