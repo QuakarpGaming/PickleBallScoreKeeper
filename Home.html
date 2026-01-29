@@ -202,12 +202,12 @@
 </html>
 <script>
     var hideBtns = true;
+    var syth = window.speechSynthesis;
+    var voices = syth.getVoices();
     //var SideOut = new Audio("./fart-with-reverb.mp3");
     document.addEventListener("DOMContentLoaded", (event) => {
         var localHideBtns = window.localStorage.getItem("btns");
-        debugger;
         if (localHideBtns != null) {
-            debugger;
             hideBtns = localHideBtns !== "true";
             KeyPress("Escape");
         }
@@ -226,7 +226,7 @@
             DownScore('rightSide');
         }
         else if (e.code === "Space") {
-            NextServer();
+            ReadScore();
         }
         else if (e.code === "ArrowUp") {
             var currentServer = document.getElementsByClassName("currentServer")[0].id;
@@ -329,16 +329,23 @@
             document.getElementById("2").classList.add("currentServer");
         }
         else if (current.id == "2") {
-        //    SideOut.play();
+            SideOut()
             document.getElementById("3").classList.add("currentServer");
+            ReadScore();
         }
         else if (current.id == "3") {
             document.getElementById("4").classList.add("currentServer");
         }
         else if (current.id == "4") {
-        //    SideOut.play();
+            SideOut()
             document.getElementById("1").classList.add("currentServer");
+            ReadScore();
         }
+    }
+    function SideOut() {
+        var whatToSay = new SpeechSynthesisUtterance("SIDE OUT");
+        whatToSay.voice = voices[5];
+        syth.speak(whatToSay);
     }
     function LastServer() {
         var current = document.getElementsByClassName("currentServer")[0];
@@ -355,6 +362,26 @@
         else if (current.id == "4") {
             document.getElementById("3").classList.add("currentServer");
         }
+    }
+    function ReadScore() {
+        var score1 = "";
+        var score2 = "";
+        var left = document.getElementById("leftSide").innerHTML;
+        var right = document.getElementById("rightSide").innerHTML;
+        var current = document.getElementsByClassName("currentServer")[0];
+        var voices = syth.getVoices();
+        debugger;
+        if (current.id == "1" || current.id == "2") {
+            score1 = left;
+            score2 = right;
+        }
+        else {
+            score1 = right;
+            score2 = left;
+        }
+        var whatToSay = new SpeechSynthesisUtterance(score1 + ' ' + score2 + ' ' + current.innerHTML);
+        whatToSay.voice = voices[5]; 
+        syth.speak(whatToSay);
     }
 </script>
 

@@ -1,0 +1,10 @@
+-fix formating
+--happens when the score is 10+
+
+-add a timer to the voice so it doesnt spam if we need to make corrections
+
+-add names
+--if you add names/initails to servers, make sure the score announces correctly
+--team names at the top
+--LATER: based on names at top update the server at the botton to reflect that
+----this may need some logic, if the server name is there we need a way to 'swap' the order so if the 2nd server from start, starts the service next round, there name needs to be first
