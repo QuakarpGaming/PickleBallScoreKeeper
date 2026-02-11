@@ -299,15 +299,15 @@
                     <table style="border-spacing: 0 10px; ">
                         <tr>
                             <td>PlayTill:&nbsp;</td><td>
-                            <input type="number" class="contentinput contentinputNumber" value="11" onfocusout="SetMaxPoints(this.value)" /></td>
+                            <input type="number" class="contentinput contentinputNumber" value="11" id="max" onfocusout="SetMaxPoints(this.value)" /></td>
                         </tr>
                         <tr>
                             <td>Win By 2:&nbsp;</td>
-                            <td><input type="checkbox" class="contentinput contentinputCheckBox" onchange="SetWinBy2(this.checked)" checked /></td>
+                            <td><input type="checkbox" class="contentinput contentinputCheckBox" id="win" onchange="SetWinBy2(this.checked)" checked /></td>
                         </tr>
                         <tr>
                             <td>Allow Sound:&nbsp;</td>
-                            <td><input type="checkbox" class="contentinput contentinputCheckBox" onchange="SetSounds(this.checked)" checked /></td>
+                            <td><input type="checkbox" class="contentinput contentinputCheckBox" id="sounds" onchange="SetSounds(this.checked)" checked /></td>
                         </tr>
                     </table>
                 </div>
@@ -381,18 +381,38 @@
             KeyPress("Escape");
             SetServerNames(true);
         }
+        var winningPoints = parseInt(window.localStorage.getItem("winningAmount"));
+        if (winningPoints != null && !isNaN(winningPoints)) {
+            winningAmount = winningPoints;
+            document.getElementById("max").value = winningAmount;
+        }
+        debugger;
+        var winBy2Storage = window.localStorage.getItem("winBy2");
+        if (winBy2Storage != null) {
+            winByTwo = winBy2Storage == "true"
+            document.getElementById("win").checked = winByTwo;
+        }
+        var useSoundsStorage = window.localStorage.getItem("useSounds");
+        if (useSoundsStorage != null) {
+            allowSounds = useSoundsStorage == "true"
+            document.getElementById("sounds").checked = allowSounds;
+        }
+
     });
     document.addEventListener("keydown", KeyPress)
     function SetMaxPoints(points) {
         winningAmount = parseInt(points)
+        window.localStorage.setItem("winningAmount", points);
+
     }
     function SetWinBy2(checked) {
-        
-
         winByTwo = checked;
+        window.localStorage.setItem("winBy2", checked);
     }
     function SetSounds(checked) {
         allowSounds = checked
+        window.localStorage.setItem("useSounds", checked);
+
     }
     function BlockKeyPress() {
         takeInput = false;
