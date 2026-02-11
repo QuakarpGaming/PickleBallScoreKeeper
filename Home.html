@@ -371,6 +371,7 @@
     var serverName2 = "";
     var winByTwo = true;
     var allowSounds = true;
+    var otherTeamsLastScoreBeforeSideOut = 0;
     document.addEventListener("DOMContentLoaded", (event) => {
         var localHideBtns = window.localStorage.getItem("btns");
         if (localHideBtns != null) {
@@ -629,7 +630,8 @@
             var serverNameToSay = ""
             if (current.id == "1" || current.id == "3") serverNameToSay = serverName1;
             else serverNameToSay = serverName2
-            var whatToSay = new SpeechSynthesisUtterance(score1 + ' ' + score2 + ' ' + serverNumber + ', ' + serverNameToSay + " to serve");
+            debugger;
+            var whatToSay = new SpeechSynthesisUtterance(score1 + '. ' + score2 + '. ' + serverNumber + '. ' + serverNameToSay + " to serve");
             whatToSay.voice = voices[5]; 
             syth.speak(whatToSay);
             setTimeout(function () {
