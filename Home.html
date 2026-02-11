@@ -371,7 +371,9 @@
     var serverName2 = "";
     var winByTwo = true;
     var allowSounds = true;
-    var otherTeamsLastScoreBeforeSideOut = 0;
+    var lastScoreRight = 0;
+    var lastScoreLeft = 0;
+    var lastStart = true;
     document.addEventListener("DOMContentLoaded", (event) => {
         var localHideBtns = window.localStorage.getItem("btns");
         if (localHideBtns != null) {
@@ -416,6 +418,33 @@
         else {
             var sideEle = document.getElementById("leftSide");
             score = parseInt(sideEle.innerHTML);
+            if (score % 2 == 0) {
+                serverName1 = document.getElementById("leftSideName1").value;
+                serverName2 = document.getElementById("leftSideName2").value;
+            }
+            else {
+                serverName1 = document.getElementById("leftSideName2").value;
+                serverName2 = document.getElementById("leftSideName1").value;
+            }
+        }
+    }
+    function SetServerNamesBackButton() {
+        var current = document.getElementsByClassName("currentServer")[0];
+        if (current.id == "3" || current.id == "4") {
+            var sideEle = document.getElementById("rightSide");
+            score = parseInt(lastScoreRight);
+            if (score % 2 == 0 && !lastStart) {
+                serverName1 = document.getElementById("rightSideName1").value;
+                serverName2 = document.getElementById("rightSideName2").value;
+            }
+            else {
+                serverName1 = document.getElementById("rightSideName2").value;
+                serverName2 = document.getElementById("rightSideName1").value;
+            }
+        }
+        else {
+            var sideEle = document.getElementById("leftSide");
+            score = parseInt(lastScoreLeft);
             if (score % 2 == 0) {
                 serverName1 = document.getElementById("leftSideName1").value;
                 serverName2 = document.getElementById("leftSideName2").value;
@@ -558,6 +587,7 @@
     function NextServer()
     {
         var current = document.getElementsByClassName("currentServer")[0];
+        var currnetScore = 0
         current.classList.remove("currentServer");
         if (current.id == "1") {
             document.getElementById("2").classList.add("currentServer");
@@ -565,6 +595,8 @@
         else if (current.id == "2") {
             document.getElementById("3").classList.add("currentServer");
             SideOut(current.id)
+            lastScoreLeft = parseInt(document.getElementById("leftSide").innerHTML);
+            lastStart = false;
         }
         else if (current.id == "3") {
             document.getElementById("4").classList.add("currentServer");
@@ -572,10 +604,10 @@
         else if (current.id == "4") {
             document.getElementById("1").classList.add("currentServer");
             SideOut(current.id)
+            lastScoreRight = parseInt(document.getElementById("rightSide").innerHTML);
         }
     }
     function SideOut(serverNumber) {
-        var score = 0
         SetServerNames();
         if (canSaySideOut && allowSounds) {
             canSaySideOut = false;
@@ -591,12 +623,14 @@
         current.classList.remove("currentServer");
         if (current.id == "1") {
             document.getElementById("4").classList.add("currentServer");
+            SetServerNamesBackButton();
         }
         else if (current.id == "2") {
             document.getElementById("1").classList.add("currentServer");
         }
         else if (current.id == "3") {
             document.getElementById("2").classList.add("currentServer");
+            SetServerNamesBackButton();
         }
         else if (current.id == "4") {
             document.getElementById("3").classList.add("currentServer");
