@@ -226,6 +226,9 @@
     a {
         text-decoration: none;
     }
+    td {
+        font-size: 1.5vw;
+    }
     @media only screen and (hover: none) and (pointer: coarse) {
         .scoreInput {
             text-align: center;
@@ -310,6 +313,20 @@
                             <td><input type="checkbox" class="contentinput contentinputCheckBox" id="sounds" onchange="SetSounds(this.checked)" checked /></td>
                         </tr>
                     </table>
+                    <hr />
+                    <table>
+                        <tr>
+                            <td>Server 1:</td>
+                            <td><label id="server1"></label></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center"><input type="button" onclick="swapServerNames()" value="&#8645;" style="width: 100%; font-size: 1.5vw;"/></td>
+                        </tr>
+                        <tr>
+                            <td>Server 2:</td>
+                            <td><label id="server2"></label></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -317,9 +334,9 @@
         <div class='scoreBox'>
             <div class="teamNameBox">
 
-                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress()" value="Server 1" />
+                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 1" />
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p>
-                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress()" value="Server 2" />
+                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 2" />
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('leftSide')" />
             <p class="scoreInput" readonly id="leftSide">0</p>
@@ -327,9 +344,9 @@
         </div>
         <div class='scoreBox'>
             <div class="teamNameBox">
-                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress()" value="Server 1" />
+                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 1" />
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p>
-                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress()" value="Server 2" />
+                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 2" />
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('rightSide')" />
             <p class="scoreInput" readonly id="rightSide">0</p>
@@ -418,10 +435,10 @@
     function BlockKeyPress() {
         takeInput = false;
     }
-    function AllowKeyPress() {
+    function AllowKeyPress(setNames = false) {
         takeInput = true;
-        SetServerNames(true)
-        
+        if(setNames)
+            SetServerNames(true)
     }
     function SetServerNames(start = false) {
         var current = document.getElementsByClassName("currentServer")[0];
@@ -449,6 +466,20 @@
                 serverName2 = document.getElementById("leftSideName1").value;
             }
         }
+        document.getElementById("server1").innerHTML = serverName1;
+        document.getElementById("server2").innerHTML = serverName2;
+
+    }
+    function swapServerNames() {
+        debugger;
+        var newfirst = serverName2;
+        var newSecond = serverName1;
+
+        serverName1 = newfirst;
+        serverName2 = newSecond;
+        document.getElementById("server1").innerHTML = serverName1;
+        document.getElementById("server2").innerHTML = serverName2;
+        sayServerName = true;
     }
     function SetServerNamesBackButton() {
         var current = document.getElementsByClassName("currentServer")[0];
