@@ -374,6 +374,7 @@
     var lastScoreRight = 0;
     var lastScoreLeft = 0;
     var lastStart = true;
+    var sayServerName = true;
     document.addEventListener("DOMContentLoaded", (event) => {
         var localHideBtns = window.localStorage.getItem("btns");
         if (localHideBtns != null) {
@@ -420,6 +421,7 @@
     function AllowKeyPress() {
         takeInput = true;
         SetServerNames(true)
+        
     }
     function SetServerNames(start = false) {
         var current = document.getElementsByClassName("currentServer")[0];
@@ -608,6 +610,7 @@
     {
         var current = document.getElementsByClassName("currentServer")[0];
         var currnetScore = 0
+        sayServerName = true;
         current.classList.remove("currentServer");
         if (current.id == "1") {
             document.getElementById("2").classList.add("currentServer");
@@ -640,6 +643,7 @@
     }
     function LastServer() {
         var current = document.getElementsByClassName("currentServer")[0];
+        sayServerName = true;
         current.classList.remove("currentServer");
         if (current.id == "1") {
             document.getElementById("4").classList.add("currentServer");
@@ -684,8 +688,15 @@
             var serverNameToSay = ""
             if (current.id == "1" || current.id == "3") serverNameToSay = serverName1;
             else serverNameToSay = serverName2
-            debugger;
-            var whatToSay = new SpeechSynthesisUtterance(score1 + '. ' + score2 + '. ' + serverNumber + '. ' + serverNameToSay + " to serve");
+            var strWhatToSay
+            if (sayServerName) {
+                sayServerName = false;
+                strWhatToSay = score1 + '. ' + score2 + '. ' + serverNumber + '. ' + serverNameToSay + " to serve";
+            }
+            else {
+                strWhatToSay = score1 + '. ' + score2 + '. ' + serverNumber + '. ';
+            }
+            var whatToSay = new SpeechSynthesisUtterance(strWhatToSay);
             whatToSay.voice = voices[5]; 
             syth.speak(whatToSay);
             setTimeout(function () {
