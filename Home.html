@@ -791,7 +791,7 @@
             if (current.id == "1" || current.id == "3") serverNameToSay = serverName1;
             else serverNameToSay = serverName2
             var strWhatToSay
-            if (sayServerName) {
+            if (sayServerName && serverNameToSay != null && serverNameToSay != "") {
                 sayServerName = false;
                 strWhatToSay = score1 + '. ' + score2 + '. ' + serverNumber + '. ' + serverNameToSay + " to serve";
             }
