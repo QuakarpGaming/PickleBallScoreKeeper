@@ -232,6 +232,10 @@
     input[list]::-webkit-calendar-picker-indicator {
         display: none !important;
     }
+    ::placeholder {
+        color: white; /* Example: Red color */
+        opacity: 1; /* Fixes Firefox's default lower opacity */
+    }
     @media only screen and (hover: none) and (pointer: coarse) {
         .scoreInput {
             text-align: center;
@@ -304,8 +308,10 @@
                 <div class="content">
                     <table style="border-spacing: 0 10px; ">
                         <tr>
-                            <td>PlayTill:&nbsp;</td><td>
-                            <input type="number" class="contentinput contentinputNumber" value="11" id="max" onfocusout="SetMaxPoints(this.value)" /></td>
+                            <td>PlayTill:&nbsp;</td>
+                            <td>
+                                <input type="number" class="contentinput contentinputNumber" value="11" id="max" onfocusout="SetMaxPoints(this.value)" />
+                            </td>
                         </tr>
                         <tr>
                             <td>Win By 2:&nbsp;</td>
@@ -316,14 +322,19 @@
                             <td><input type="checkbox" class="contentinput contentinputCheckBox" id="sounds" onchange="SetSounds(this.checked)" checked /></td>
                         </tr>
                     </table>
-                    <hr />
+                </div>
+                <hr />
+                <div class="content">
                     <table>
+                        <tr>
+                            <td colspan="2">Current Server Order</td>
+                        </tr>
                         <tr>
                             <td>Server 1:</td>
                             <td><label id="server1"></label></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="text-align:center"><input type="button" onclick="swapServerNames()" value="&#8645;" style="width: 100%; font-size: 1.5vw;"/></td>
+                            <td colspan="2" style="text-align:center"><input type="button" onclick="swapServerNames()" value="&#8645;" style="width: 100%; font-size: 1.5vw;" /></td>
                         </tr>
                         <tr>
                             <td>Server 2:</td>
@@ -337,9 +348,9 @@
         <div class='scoreBox'>
             <div class="teamNameBox">
 
-                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" />
+                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="1"/>
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p>
-                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"/>
+                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names" tabindex="2"/>
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('leftSide')" />
             <p class="scoreInput" readonly id="leftSide">0</p>
@@ -347,9 +358,9 @@
         </div>
         <div class='scoreBox'>
             <div class="teamNameBox">
-                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names"/>
+                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="3"/>
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p> 
-                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"/>
+                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"tabindex="4"/>
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('rightSide')" />
             <p class="scoreInput" readonly id="rightSide">0</p>
@@ -397,24 +408,26 @@
     var lastScoreLeft = 0;
     var lastStart = true;
     var sayServerName = true;
-    document.addEventListener("DOMContentLoaded", (event) => {
+    document.addEventListener("DOMContentLoaded", (event) =>
+    {
         var localHideBtns = window.localStorage.getItem("btns");
         if (localHideBtns != null) {
             hideBtns = localHideBtns !== "true";
             KeyPress("Escape");
-            SetServerNames(true);
-            var namesToLoadStr = window.localStorage.getItem("names")
-            if (namesToLoadStr != null && namesToLoadStr.trim() != "") {
-                var namesList = namesToLoadStr.split(',');
-                var savedNames = document.getElementById("names");
-
-                namesList.forEach(name => {
-                    var newOption = document.createElement("option");
-                    newOption.value = name;
-                    savedNames.appendChild(newOption);
-                })
-            }
         }
+
+        var namesToLoadStr = window.localStorage.getItem("names")
+        if (namesToLoadStr != null && namesToLoadStr.trim() != "") {
+            var namesList = namesToLoadStr.split(',');
+            var savedNames = document.getElementById("names");
+
+            namesList.forEach(name => {
+                var newOption = document.createElement("option");
+                newOption.value = name;
+                savedNames.appendChild(newOption);
+            })
+        }
+
         var winningPoints = parseInt(window.localStorage.getItem("winningAmount"));
         if (winningPoints != null && !isNaN(winningPoints)) {
             winningAmount = winningPoints;
@@ -431,8 +444,13 @@
             allowSounds = useSoundsStorage == "true"
             document.getElementById("sounds").checked = allowSounds;
         }
-
+        document.querySelectorAll("input").forEach(x => {
+            if (x.list == null) {
+                x.tabIndex = -1;
+            }
+        })
     });
+
     document.addEventListener("keydown", KeyPress)
     function SetMaxPoints(points) {
         winningAmount = parseInt(points)
@@ -563,7 +581,6 @@
         }
     }
     function KeyPress(e) {
-        
         if (takeInput) {
             if (e.code === "PageDown") {
                 winningAmount = 9;
