@@ -229,6 +229,9 @@
     td {
         font-size: 1.5vw;
     }
+    input[list]::-webkit-calendar-picker-indicator {
+        display: none !important;
+    }
     @media only screen and (hover: none) and (pointer: coarse) {
         .scoreInput {
             text-align: center;
@@ -334,9 +337,9 @@
         <div class='scoreBox'>
             <div class="teamNameBox">
 
-                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 1" />
+                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" />
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p>
-                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 2" />
+                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"/>
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('leftSide')" />
             <p class="scoreInput" readonly id="leftSide">0</p>
@@ -344,15 +347,17 @@
         </div>
         <div class='scoreBox'>
             <div class="teamNameBox">
-                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 1" />
-                <p style="font-size:calc(4rem + 5vw); color:white;"></p>
-                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="AllowKeyPress(true)" value="Server 2" />
+                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names"/>
+                <p style="font-size:calc(4rem + 5vw); color:white;"></p> 
+                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"/>
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('rightSide')" />
             <p class="scoreInput" readonly id="rightSide">0</p>
             <input class="scorebtn phone" type="button" value="&#8595;" onclick="DownScore('rightSide')" />
         </div>
-
+        
+        <datalist id="names">
+        </datalist>
     </div>
     <br />
     <div class="footer">
@@ -398,13 +403,24 @@
             hideBtns = localHideBtns !== "true";
             KeyPress("Escape");
             SetServerNames(true);
+            var namesToLoadStr = window.localStorage.getItem("names")
+            if (namesToLoadStr != null && namesToLoadStr.trim() != "") {
+                var namesList = namesToLoadStr.split(',');
+                var savedNames = document.getElementById("names");
+
+                namesList.forEach(name => {
+                    var newOption = document.createElement("option");
+                    newOption.value = name;
+                    savedNames.appendChild(newOption);
+                })
+            }
         }
         var winningPoints = parseInt(window.localStorage.getItem("winningAmount"));
         if (winningPoints != null && !isNaN(winningPoints)) {
             winningAmount = winningPoints;
             document.getElementById("max").value = winningAmount;
         }
-        debugger;
+        
         var winBy2Storage = window.localStorage.getItem("winBy2");
         if (winBy2Storage != null) {
             winByTwo = winBy2Storage == "true"
@@ -470,8 +486,46 @@
         document.getElementById("server2").innerHTML = serverName2;
 
     }
+    function UpdateServerAndDataList(newName) {
+        takeInput = true;
+        SetServerNames(true);
+        if (newName != null && newName != "") {
+            newName = newName.trim();
+            newName = newName.charAt(0).toUpperCase() + newName.slice(1);
+
+            var savedNames = document.getElementById("names");
+            if (!(Array.from(savedNames.options).some(option => option.value === newName))) {  
+                var option = document.createElement('option');
+                option.value = newName;
+                savedNames.appendChild(option); 
+                ReorderSavedNames();
+            }
+        }
+    }
+    function ReorderSavedNames() {
+        var savedNames = document.getElementById("names");
+        var options = Array.from(savedNames.options);
+        options.sort((a, b) => {
+            return a.value.localeCompare(b.value);
+        });
+        savedNames.innerHTML = '';
+
+        options.forEach(o => {
+            savedNames.appendChild(o)
+        });
+        updateLocalNamesList();
+    }
+
+    function updateLocalNamesList() {
+        var savedNames = document.getElementById("names");
+        var options = Array.from(savedNames.options);
+        var saveString = '';
+        options.forEach(o => {
+            saveString += (o.value + ',');
+        })
+        window.localStorage.setItem("names", saveString);
+    }
     function swapServerNames() {
-        debugger;
         var newfirst = serverName2;
         var newSecond = serverName1;
 
