@@ -353,12 +353,24 @@
             </div>
         </div>
         <!--END OF SETTING POPUP-->
+        <!--SERVER NAME HISTORYEDIT-->
+        <div class="circle" style="left:97%"><a class="button" href="#NH" onclick="BlockKeyPress()">NH</a></div>
+        <div id="NH" class="overlay">
+            <div class="popup">
+                <h2>Name History</h2>
+                <a class="close" href="#" onclick="AllowKeyPress()">&times;</a>
+                <div class="content">
+                    <ul id="nameHistory"></ul>
+                </div>
+            </div>
+        </div>
+        <!------------------------------>
         <div class='scoreBox'>
             <div class="teamNameBox">
 
-                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="1"/>
+                <input class="team-name" type="text" id="leftSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="1" />
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p>
-                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names" tabindex="2"/>
+                <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names" tabindex="2" />
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('leftSide')" />
             <p class="scoreInput" readonly id="leftSide">0</p>
@@ -366,15 +378,15 @@
         </div>
         <div class='scoreBox'>
             <div class="teamNameBox">
-                <input class="team-name currentServerName" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="3"/>
-                <p style="font-size:calc(4rem + 5vw); color:white;"></p> 
-                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"tabindex="4"/>
+                <input class="team-name currentServerName" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="3" />
+                <p style="font-size:calc(4rem + 5vw); color:white;"></p>
+                <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names" tabindex="4" />
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('rightSide')" />
             <p class="scoreInput" readonly id="rightSide">0</p>
             <input class="scorebtn phone" type="button" value="&#8595;" onclick="DownScore('rightSide')" />
         </div>
-        
+
         <datalist id="names">
         </datalist>
     </div>
@@ -433,9 +445,14 @@
             var savedNames = document.getElementById("names");
 
             namesList.forEach(name => {
-                var newOption = document.createElement("option");
-                newOption.value = name;
-                savedNames.appendChild(newOption);
+                if (name != "") {
+                    var newOption = document.createElement("option");
+                    newOption.value = name;
+                    savedNames.appendChild(newOption);
+                    var newListItem = document.createElement("li")
+                    newListItem.innerHTML = name + "&nbsp<button style='vertical-align:middle;' onclick='removeName(\""+name +"\")'>X</button>";
+                    document.getElementById("nameHistory").appendChild(newListItem);
+                }
             })
         }
 
@@ -467,6 +484,16 @@
         })
     });
 
+    function removeName(name) {
+        var savedNames = document.getElementById("names");
+        var nameToRemoveOption = Array.from(savedNames.options).find(option => option.value === name)
+        savedNames.removeChild(nameToRemoveOption);
+
+        var ulSavedName = document.getElementById("nameHistory")
+        var nameToRemoveOption = Array.from(ulSavedName.children).find(option => option.innerHTML.startsWith(name))
+        ulSavedName.removeChild(nameToRemoveOption);
+        updateLocalNamesList();
+    }
     document.addEventListener("keydown", KeyPress)
     function SetMaxPoints(points) {
         winningAmount = parseInt(points)
