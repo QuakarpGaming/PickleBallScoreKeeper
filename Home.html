@@ -100,6 +100,10 @@
         background-color: white;
         color:black;
     }
+    .currentServerName {
+        background-color: white !important;
+        color: black !important;
+    }
     .phone{
         display: none;
     }
@@ -133,7 +137,7 @@
         font-weight: bolder;
         background-color: black;
         color: white;
-        text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
+        text-shadow: -4px 0 black, 0 4px black, 4px 0 black, 0 -4px black;
         text-align:center;
         border:dotted 3px;
     }
@@ -321,6 +325,10 @@
                             <td>Allow Sound:&nbsp;</td>
                             <td><input type="checkbox" class="contentinput contentinputCheckBox" id="sounds" onchange="SetSounds(this.checked)" checked /></td>
                         </tr>
+                        <tr>
+                            <td>Say Server Name Every Time:&nbsp;</td>
+                            <td><input type="checkbox" class="contentinput contentinputCheckBox" id="everyTime" onchange="setSayServerNames(this.checked)" checked /></td>
+                        </tr>
                     </table>
                 </div>
                 <hr />
@@ -358,7 +366,7 @@
         </div>
         <div class='scoreBox'>
             <div class="teamNameBox">
-                <input class="team-name" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="3"/>
+                <input class="team-name currentServerName" type="text" id="rightSideName1" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 1" list="names" tabindex="3"/>
                 <p style="font-size:calc(4rem + 5vw); color:white;"></p> 
                 <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names"tabindex="4"/>
             </div>
@@ -408,6 +416,9 @@
     var lastScoreLeft = 0;
     var lastStart = true;
     var sayServerName = true;
+    var sayServerNameEveryTime = true;
+    var lastServerSideOutIDLeft = "";
+    var lastServerSideOutIDRight = "";
     document.addEventListener("DOMContentLoaded", (event) =>
     {
         var localHideBtns = window.localStorage.getItem("btns");
@@ -444,6 +455,11 @@
             allowSounds = useSoundsStorage == "true"
             document.getElementById("sounds").checked = allowSounds;
         }
+        var sayServerNameEvery = window.localStorage.getItem("everytime")
+        if (sayServerNameEvery != null) {
+            sayServerNameEveryTime = ssayServerNameEvery == "true"
+            document.getElementById("everyTime").checked = sayServerNameEveryTime;
+        }
         document.querySelectorAll("input").forEach(x => {
             if (x.list == null) {
                 x.tabIndex = -1;
@@ -465,6 +481,10 @@
         allowSounds = checked
         window.localStorage.setItem("useSounds", checked);
 
+    }
+    function setSayServerNames(checked) {
+        sayServerNameEveryTime = checked
+        window.localStorage.setItem("everytime", checked);
     }
     function BlockKeyPress() {
         takeInput = false;
@@ -552,6 +572,8 @@
         document.getElementById("server1").innerHTML = serverName1;
         document.getElementById("server2").innerHTML = serverName2;
         sayServerName = true;
+        document.getElementsByClassName("currentServerName")[0].classList.remove("currentServerName");
+        
     }
     function SetServerNamesBackButton() {
         var current = document.getElementsByClassName("currentServer")[0];
@@ -722,6 +744,8 @@
             SideOut(current.id)
             lastScoreLeft = parseInt(document.getElementById("leftSide").innerHTML);
             lastStart = false;
+            lastServerSideOutIDLeft = document.getElementsByClassName("currentServerName")[0].id;
+
         }
         else if (current.id == "3") {
             document.getElementById("4").classList.add("currentServer");
@@ -730,7 +754,22 @@
             document.getElementById("1").classList.add("currentServer");
             SideOut(current.id)
             lastScoreRight = parseInt(document.getElementById("rightSide").innerHTML);
+            lastServerSideOutIDRight = document.getElementsByClassName("currentServerName")[0].id;
         }
+        highlightServerName(true)
+
+    }
+    function highlightServerName(useLastScore = false) {
+        document.getElementsByClassName("currentServerName")[0].classList.remove("currentServerName");
+        const allInputs = document.getElementsByTagName("input");
+        var currentScore = 0;
+        //find the current serve side,score,and servernumber,
+        
+        //then highlight what the serverName is
+        //hint: const inputElementStatic = document.querySelector('input[value="Search"]');
+        document.getElementById(findServerNameID(useLastScore)).classList.add('currentServerName');
+        //seach for server name and give it the class removed from above
+        //put this funtion at the end of both server switching funcs
     }
     function SideOut(serverNumber) {
         SetServerNames();
@@ -743,6 +782,28 @@
             setTimeout(function () { canSaySideOut = true; }, 5000);
         }
     }
+    function findServerNameID(useLastScore) {
+        var sideToUse = "";
+        var currentServerId = document.getElementsByClassName("currentServer")[0].id;
+        if (currentServerId == "1" || currentServerId == "2") sideToUse = "leftSide"
+        else sideToUse = "rightSide";
+        currentScore = parseInt(document.getElementById(sideToUse).value)
+        if (useLastScore) {
+            if (sideToUse == "leftSide")
+                currentScore = lastScoreLeft;
+            else
+                currentScore = lastScoreRight;
+        }
+        var isEven = currentScore % 2 == 0
+        var nameToSeach = ""
+        if (currentServerId == "1" || currentServerId == "3") {
+            nameToSeach = isEven ? "1" : "2";
+        }
+        else {
+            nameToSeach = isEven ? "2" : "1";
+        }
+        return sideToUse + "Name" + nameToSeach
+    }
     function LastServer() {
         var current = document.getElementsByClassName("currentServer")[0];
         sayServerName = true;
@@ -750,17 +811,24 @@
         if (current.id == "1") {
             document.getElementById("4").classList.add("currentServer");
             SetServerNamesBackButton();
+            document.getElementsByClassName("currentServerName")[0].classList.remove("currentServerName");
+            document.getElementById(lastServerSideOutIDRight).classList.add("currentServerName")
         }
         else if (current.id == "2") {
             document.getElementById("1").classList.add("currentServer");
+            highlightServerName(true)
         }
         else if (current.id == "3") {
             document.getElementById("2").classList.add("currentServer");
             SetServerNamesBackButton();
+            document.getElementsByClassName("currentServerName")[0].classList.remove("currentServerName");
+            document.getElementById(lastServerSideOutIDLeft).classList.add("currentServerName")
         }
         else if (current.id == "4") {
             document.getElementById("3").classList.add("currentServer");
+            highlightServerName(true)
         }
+        
     }
     function ReadScore() {
         if (canSayScore && allowSounds) {
@@ -791,7 +859,7 @@
             if (current.id == "1" || current.id == "3") serverNameToSay = serverName1;
             else serverNameToSay = serverName2
             var strWhatToSay
-            if (sayServerName && serverNameToSay != null && serverNameToSay != "") {
+            if ((sayServerName || sayServerNameEveryTime) && serverNameToSay != null && serverNameToSay != "") {
                 sayServerName = false;
                 strWhatToSay = score1 + '. ' + score2 + '. ' + serverNumber + '. ' + serverNameToSay + " to serve";
             }
