@@ -240,6 +240,9 @@
         color: white; /* Example: Red color */
         opacity: 1; /* Fixes Firefox's default lower opacity */
     }
+    .scoreHidden{
+        display: none;
+    }
     @media only screen and (hover: none) and (pointer: coarse) {
         .scoreInput {
             text-align: center;
@@ -370,7 +373,8 @@
                 <input class="team-name" type="text" id="leftSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names" tabindex="2" />
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('leftSide')" />
-            <p class="scoreInput" readonly id="leftSide">0</p>
+            <p class="scoreInput scoreHidden" readonly id="leftSide">0</p>
+            <img src="pickleJar.png" class="scoreInput" id="leftSideImg">
             <input class="scorebtn phone" type="button" value="&#8595;" onclick="DownScore('leftSide')" />
         </div>
         <div class='scoreBox'>
@@ -380,7 +384,8 @@
                 <input class="team-name" type="text" id="rightSideName2" onfocus="BlockKeyPress()" onfocusout="UpdateServerAndDataList(this.value)" placeholder="Server 2" list="names" tabindex="4" />
             </div>
             <input class="scorebtn phone" type="button" value="&#8593;" onclick="UpScore('rightSide')" />
-            <p class="scoreInput" readonly id="rightSide">0</p>
+            <p class="scoreInput scoreHidden" readonly id="rightSide">0</p>
+            <img src="pickleJar.png" class="scoreInput" id="rightSideImg">
             <input class="scorebtn phone" type="button" value="&#8595;" onclick="DownScore('rightSide')" />
         </div>
 
@@ -724,11 +729,23 @@
     {
         var sideEle = document.getElementById(side);
         var currentScore = parseInt(sideEle.innerHTML);
-        
+        var sideEleImg = document.getElementById(side +"Img");
         currentScore += 1;
         if (currentScore >= 10) {
             sideEle.classList.add("scoreBoxTwoDigits");
         }
+
+        if(currentScore != 0)
+        {
+            sideEle.classList.remove("scoreHidden");
+            sideEleImg.classList.add("scoreHidden");
+        }
+        else
+        {
+            sideEle.classList.add("scoreHidden");
+            sideEleImg.classList.remove("scoreHidden");
+        }
+
         sideEle.innerHTML = currentScore.toString();
         if (currentScore >= winningAmount) {
             var otherScore;
@@ -747,11 +764,25 @@
     }
     function DownScore(side) {
         var sideEle = document.getElementById(side);
+        var sideEleImg = document.getElementById(side +"Img");
+
         var currentScore = parseInt(sideEle.innerHTML);
         if (currentScore != 0)
             currentScore -= 1;
         if (currentScore < 10)
             sideEle.classList.remove("scoreBoxTwoDigits");
+
+        if(currentScore != 0)
+        {
+            sideEle.classList.remove("scoreHidden");
+            sideEleImg.classList.add("scoreHidden");
+        }
+        else
+        {
+            sideEle.classList.add("scoreHidden");
+            sideEleImg.classList.remove("scoreHidden");
+        }
+
         sideEle.innerHTML = currentScore.toString();
     }
     function NextServer()
