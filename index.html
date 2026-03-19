@@ -1,0 +1,424 @@
+<html>
+<header>
+    <title>Hardest Part of the Sport!</title>
+    <link rel="Stylesheet" href="Styles.css">
+</header>
+<body>
+    <nav>
+        <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" ></label></div>
+        <div class="NavCol col-5"><label class="NavLabel">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked></label></div>
+        <div class="NavCol col-5"><a class="NavLabel" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
+        <div id="playerNames" class="overlay">
+            <div class="popup">
+                <h2>Enter Player Names</h2>
+                <a class="close" href="#" onclick="AllowKeyPress();SetScoreHTML();">&times;</a>
+                <div class="content">
+                    <table class="CourtTable">
+                        <thead>
+                            <tr>
+                                <th class="CellContentLeft" colspan="2">South Team</td>
+                                <th class="CellContentRight" colspan="2">North Team</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="TopServerNameCell"><input type="text" onchange="UpdateServer('S2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 2nd Server" list="names"></td>
+                                <td class="kitchenLeft" rowspan="2"></td>
+                                <td class="kitchenRight" rowspan="2"></td>
+                                <td class="CellContentRight TopServerNameCell"><input type="text" onchange="UpdateServer('N1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 1st Server" list="names"></td>
+                            </tr>
+                            <tr>
+                                <td class="BotServerNameCell"><input type="text" onchange="UpdateServer('S1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 1st Server" list="names"></td>
+                                <td class="CellContentRight BotServerNameCell"><input type="text" onchange="UpdateServer('N2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 2nd Server" list="names"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="NavCol col-5"><a class="NavLabel" href="#controls" onclick="BlockKeyPress()">Controls</a></div>
+        <div id="controls" class="overlay">
+            <div class="popup">
+                <h2>Controls</h2>
+                <a class="close" href="#" onclick="AllowKeyPress()">&times;</a>
+                <div class="content">
+                    <div class="contentColFlex">
+                        <div>Up Arrow: Increases the Serving Team's score</div>
+                        <div>Down Arrow: Decreases the Serving Team's score</div>
+                        <div>Right Arrow: Moves to the Next Server</div>
+                        <div>Left Arrow: Moves to the Previous Server</div>
+                        <div>Spacebar: Annouces the score out loud!</div>
+                        <div>W: Increaess the Receiving Team's score</div>
+                        <div>S: Decreases the Receiving Team's score</div>
+                   </div>
+                </table>
+                </div>
+            </div>
+        </div>
+        <div class="NavCol col-5"><a class="NavLabel" href="#NH" onclick="BlockKeyPress()">Name History</a></div>
+        <div id="NH" class="overlay">
+            <div class="popup">
+                <h2>Name History</h2>
+                <a class="close" href="#" onclick="AllowKeyPress()">&times;</a>
+                <div class="content">
+                    <div id="nameHistory" class="contentColFlex">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="Score" id="score">
+    </div>
+    <div class="Server" id="server">
+    </div>
+    <!--Data Lists-->
+    <datalist id="names">
+    </datalist>
+</body>
+<script>
+    //Globals//////////
+    var namesDict ={
+        "N1" : "",
+        "N2" : "",
+        "S1" : "",
+        "S2" : "",
+    }
+    var LastSideOutScores ={
+        "N" : 0 ,
+        "S" : 0
+    }
+    var currentSideOutScore = 0;
+    var nScore = 0;
+    var sScore = 0;
+    var serverNumber = 1;
+    var takeInput = true;
+    ///////////////////////////
+    document.addEventListener("DOMContentLoaded", (event) =>
+    {
+        var namesToLoadStr = window.localStorage.getItem("names")
+        if (namesToLoadStr != null && namesToLoadStr.trim() != "") {
+            var namesList = namesToLoadStr.split(',');
+            var savedNames = document.getElementById("names");
+
+            namesList.forEach(name => {
+                if (name != "") {
+                    var newOption = document.createElement("option");
+                    newOption.value = name;
+                    savedNames.appendChild(newOption);
+                    var newDiv = document.createElement("div")
+                    newDiv.innerHTML = name + "&nbsp<button style='vertical-align:middle;' onclick='removeName(\""+ name +"\")'>X</button>";
+                    document.getElementById("nameHistory").appendChild(newDiv);
+                }
+            })
+        }
+    })
+    function UpdateServer(place,name)
+    {
+        namesDict[place] = name;
+    }
+
+    ////////////////////////////
+    /////////Key Presses////////
+    ////////////////////////////
+    document.addEventListener("keydown", KeyPress)
+
+    function BlockKeyPress() {
+        takeInput = false;
+    }
+    function AllowKeyPress(setNames = false) {
+        takeInput = true;
+    }
+
+    function KeyPress(e) {
+        if (takeInput) {
+            if (e.code === "Space") {
+                UseVoice("SCORE");
+            }
+            else if (e.code === "ArrowUp") {
+                    UpScore();
+            }
+            else if (e.code === "ArrowDown") {
+                    DownScore();
+            }
+            else if (e.code === "ArrowRight") {
+                NextServer();
+            }
+            else if (e.code === "ArrowLeft") {
+                LastServer();
+            }
+            else if( e.code === "KeyW")
+            {
+                UpOtherScore();
+            }
+            else if(e.code === "KeyS")
+            {
+                DownOtherScore();
+            }
+            
+        }
+    }
+    //////////////////////////////////
+    //////////////////////////////////
+    //////////////////////////////////
+
+    ////////////////////
+    //////////Names/////
+    ////////////////////
+    function UpdateServerAndDataList(newName) {
+        if (newName != null && newName != "") {
+            newName = newName.trim();
+            newName = newName.charAt(0).toUpperCase() + newName.slice(1);
+
+            var savedNames = document.getElementById("names");
+            if (!(Array.from(savedNames.options).some(option => option.value === newName))) {  
+                var option = document.createElement('option');
+                option.value = newName;
+                savedNames.appendChild(option); 
+                ReorderSavedNames();
+            }
+        }
+    }
+    function ReorderSavedNames() {
+        var savedNames = document.getElementById("names");
+        var options = Array.from(savedNames.options);
+        options.sort((a, b) => {
+            return a.value.localeCompare(b.value);
+        });
+        savedNames.innerHTML = '';
+
+        options.forEach(o => {
+            savedNames.appendChild(o)
+        });
+        updateLocalNamesList();
+    }
+
+    function updateLocalNamesList() {
+        var savedNames = document.getElementById("names");
+        var options = Array.from(savedNames.options);
+        var saveString = '';
+        options.forEach(o => {
+            saveString += (o.value + ',');
+        })
+        window.localStorage.setItem("names", saveString);
+    }
+    function removeName(name) {
+        var savedNames = document.getElementById("names");
+        var nameToRemoveOption = Array.from(savedNames.options).find(option => option.value === name)
+        savedNames.removeChild(nameToRemoveOption);
+
+        var ulSavedName = document.getElementById("nameHistory")
+        var nameToRemoveOption = Array.from(ulSavedName.children).find(option => option.innerHTML.startsWith(name))
+        ulSavedName.removeChild(nameToRemoveOption);
+        updateLocalNamesList();
+    }
+    ////////////////////////////////
+    /////////end of names///////////
+    ////////////////////////////////
+
+    ////////////////////////////////
+    //////////scores////////////////
+    ////////////////////////////////
+
+    function SetScoreHTML()
+    {
+        var scoreHTML = ""
+        var serverNameToShow = "";
+
+        var modServerNumber = (serverNumber % 4);
+        var scoreServerNumber = (modServerNumber % 2) + 1;
+
+        if(modServerNumber < 2 || serverNumber == 1) //NorthSide First
+        {
+            scoreHTML = (nScore == 0 ? '<img src="pickleJar.png" class="PickleImg">' : nScore.toString())
+                        + ' - '
+                        + (sScore == 0 ? '<img src="pickleJar.png" class="PickleImg">' : sScore.toString())
+            if(serverNumber == 1)
+            {
+                    serverNameToShow = namesDict["N1"]
+            }
+            else if(isEven(currentSideOutScore))
+            {
+                serverNameToShow = namesDict["N" + scoreServerNumber];
+            }
+            else
+            {
+                serverNameToShow = namesDict["N" + (scoreServerNumber == 1 ? "2":"1")];
+            }
+        }
+        else //south Side First
+        {
+            scoreHTML = (sScore == 0 ? '<img src="pickleJar.png" class="PickleImg">' : sScore.toString())
+                        + ' - '
+                        + (nScore == 0 ? '<img src="pickleJar.png" class="PickleImg">' : nScore.toString())
+            if(isEven(currentSideOutScore))
+            {
+                serverNameToShow = namesDict["S" + scoreServerNumber];
+            }
+            else
+            {
+                serverNameToShow = namesDict["S" + (scoreServerNumber == 1 ? "2":"1")];
+            }
+        }
+        scoreHTML += ' - ';
+        scoreHTML += serverNumber != 1 ?  scoreServerNumber.toString() : "2"
+
+        document.getElementById("score").innerHTML = scoreHTML
+        document.getElementById("server").innerHTML = serverNameToShow + " To Serve"
+        
+    }
+    function UpScore()
+    {
+        var modServerNumber = serverNumber % 4
+        if(modServerNumber < 2)
+        {
+            nScore++;
+        }
+        else
+        {
+            sScore++;
+        }
+        CheckWinner();
+        SetScoreHTML();
+    }
+    function DownScore()
+    {
+        var modServerNumber = serverNumber % 4
+        if(modServerNumber < 2 && nScore != 0)
+        {
+            nScore--;
+        }
+        else if(sScore != 0)
+        {
+            sScore--;
+        }
+        SetScoreHTML()
+    }
+
+    function UpOtherScore()
+    {
+        var modServerNumber = serverNumber % 4
+        if(modServerNumber < 2)
+        {
+            sScore++;
+        }
+        else
+        {
+            nScore++;
+        }
+        CheckWinner();
+        SetScoreHTML();
+    }
+    function DownOtherScore()
+    {
+        var modServerNumber = serverNumber % 4
+        if(modServerNumber < 2 && sScore != 0)
+        {
+            sScore--;
+        }
+        else if(nScore != 0)
+        {
+            nScore--;
+        }
+        SetScoreHTML()
+    }
+    function CheckWinner()
+    {
+        var modServerNumber = serverNumber % 4;
+        var scoreToCheck = modServerNumber < 2 ? nScore : sScore;
+        var otherScore = modServerNumber < 2 ? sScore : nScore;
+        var playingTill = parseInt(document.getElementById("playTill").value);
+        var winBy2 = document.getElementById("winBy2").checked;
+        if(scoreToCheck >= playingTill)
+        {
+            if(scoreToCheck - otherScore >= 2 || !winBy2)
+            {
+                UseVoice("WIN");
+            }
+        }
+    }
+    ////////////////////////////////
+    ////////////////////////////////
+    ////////////////////////////////
+
+    ////////////////////////////////
+    ////////////servers/////////////
+    ////////////////////////////////
+    function LastServer()
+    {
+        if(serverNumber != 1) serverNumber--;
+
+        if(serverNumber % 2)
+        {
+            console.log("YES!")
+        }
+        SetScoreHTML()
+    }
+    function NextServer()
+    {
+        if(serverNumber % 2)
+        {
+            UseVoice("SIDEOUT")   
+        }
+        serverNumber++;
+        SetCurrentSideOutScore();
+        SetScoreHTML()
+    }
+    function SetCurrentSideOutScore()
+    {
+        var modServerNumber = serverNumber % 4;
+        currentSideOutScore = modServerNumber < 2 ? nScore : sScore;
+    }
+    ////////////////////////////////
+    ////////////////////////////////
+    ////////////////////////////////
+
+    ////////////////////////////////
+    /////////voice//////////////////
+    ////////////////////////////////
+    var syth = window.speechSynthesis;
+    var voices = syth.getVoices();
+    function UseVoice(sayWhat)
+    {
+        var stringToSay = ""
+        switch (sayWhat) {
+            case "WIN":
+                var modServerNumber = serverNumber % 4
+                if(modServerNumber < 2)
+                {
+                    stringToSay += namesDict["N1"] + " and " + namesDict["N2"];
+                }
+                else
+                {
+                    stringToSay += namesDict["S1"] + " and " + namesDict["S2"];
+                }
+                stringToSay += " have won the set";
+                break;
+            case "SCORE":
+                stringToSay += document.getElementById("score").innerHTML.replaceAll("-",".").replaceAll('<img src="pickleJar.png" class="PickleImg">','0')
+                stringToSay += ". ";
+                stringToSay += document.getElementById("server").innerHTML;
+                if(serverNumber == 1)
+                {
+                    stringToSay = stringToSay.replace("2","Start");
+                }
+                break;
+            case "SIDEOUT":
+                stringToSay += "SIDE OUT!";
+                break
+            default:
+                break;
+        }
+        var whatToSay = new SpeechSynthesisUtterance(stringToSay);
+            whatToSay.voice = voices[5];
+            syth.speak(whatToSay);
+    }
+    ////////////////////////////////
+    ////////////////////////////////
+    ////////////////////////////////
+    function isEven(num)
+    {
+        return (num & 1) === 0;
+    }
+</script>
+</html>

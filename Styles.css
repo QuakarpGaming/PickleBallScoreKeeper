@@ -1,0 +1,224 @@
+body, nav{
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+a{
+    color: white;
+}
+nav{
+    height: 5%;
+    display: flex;
+    flex-direction: row;
+    border: 0.5em solid white;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-items: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[list]::-webkit-calendar-picker-indicator {
+        display: none !important;
+    }
+.PickleImg
+{
+
+    height: 47vh;
+    width: 28vh;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+/********************/
+/*custom class start*/
+/********************/
+.NavInput{
+    
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 0;
+    height: 4vh;
+    width: 5vh;
+    font-size: 3vh;
+}
+.NavLabel{
+    height: 98%;
+    font-size: 4vh;
+    display: flex;
+}
+.NavCol{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.CourtTable{
+    width: 98%;
+    height: 80%;
+}
+.CourtTable > tbody > tr> td{
+    padding: 0;
+}
+.CourtTable > tbody > tr{
+    height: 40%;
+}
+.CourtTable > tbody > tr> td > input{
+    height: 5vh;
+    font-size: 3vh;
+    width: 100%;
+}
+.CourtTable > tbody > tr > td.BotServerNameCell > input{
+    margin-top: 12vh;
+}
+.CourtTable > tbody > tr > td.TopServerNameCell > input{
+    margin-bottom: 12vh;
+}
+.CourtTable >thead >tr >th{
+    font-weight: bold;
+    font-size: 8vh;
+}
+.kitchenLeft
+{
+    border-top: 2vh solid white !important;
+    border-bottom: 2vh solid white !important;
+    border-left: 0 !important;
+    border-right: 1vh  dashed white!important;
+    width: 10%;
+}
+.kitchenRight
+{
+    border-top: 2vh solid white !important;
+    border-bottom: 2vh solid white !important;
+    border-left: 1vh dashed white !important;
+    border-right: 0 !important;
+    width: 10%;
+}
+.TopServerNameCell
+{
+    border-top: 2vh solid white !important;
+    border-bottom: 1vh solid white !important;
+    border-left: 2vh  solid white!important;
+    border-right: 2vh  solid white !important;
+    width: 40%;
+}
+.BotServerNameCell
+{
+    border-top: 1vh solid white !important;
+    border-bottom: 2vh solid white !important;
+    border-left: 2vh  solid white!important;
+    border-right: 2vh  solid white !important;
+    width: 40%;
+}
+.ServerNameNorth
+{
+    margin-right: 0px;
+}
+.CellContentRight {
+    text-align: right;
+}
+.CellContentLeft {
+    text-align: left;
+}
+.contentColFlex > div
+{
+    font-size: 4vh;
+    width: 48%;
+    border-bottom: 0.5vh solid white;
+    margin-bottom: 1vh;
+}
+.contentColFlex,
+.contentColFlexlist{
+    margin: 0;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-size: 6vh;
+    align-content: flex-start;
+}
+.Score{
+    height: 78%;
+    border: 1vh solid white;
+    font-size: 30vh;
+    text-align: center;
+    align-content: center;
+}
+.Server
+{
+    height: 10%;
+    border: 1vh solid white;
+    text-align: center;
+    align-content: center;
+    font-size: 9vh;
+}
+/****************/
+/*Columns widths*/
+/****************/
+.col-5
+{
+    width: 22%;
+}
+/*************/
+/*popup start*/
+/*************/
+.overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        transition: opacity 500ms;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+        .overlay:target {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    .popup {
+        margin: 70px auto;
+        padding: 5vh;
+        background: black;
+        border-radius: 5px;
+        width: 80%;
+        position: relative;
+        transition: all 5s ease-in-out;
+        height: fit-content;
+        border: dashed 1em;
+        max-height: 80%;
+        min-height: 70%;
+    }
+
+    .popup h2 {
+        margin-top: 0;
+        color: white;
+        font-family: Tahoma, Arial, sans-serif;
+    }
+
+    .popup .close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        transition: all 200ms;
+        font-size: 3em;
+        font-weight: bold;
+        text-decoration: none;
+        color: red;
+    }
+
+        .popup .close:hover {
+            color: #06D85F;
+        }
+
+    .popup .content {
+        max-height: 30%;
+        overflow: auto;
+    }
