@@ -3,6 +3,7 @@ body, nav{
     color: white;
     display: flex;
     flex-direction: column;
+    min-width: 600px;
 }
 a{
     color: white;
@@ -142,11 +143,14 @@ input[list]::-webkit-calendar-picker-indicator {
     align-content: flex-start;
 }
 .Score{
-    height: 78%;
+        height: 78%;
     border: 1vh solid white;
-    font-size: 30vh;
+    font-size: calc(3rem + 16vw);
     text-align: center;
-    align-content: center;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
 }
 .Server
 {
