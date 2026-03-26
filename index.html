@@ -356,12 +356,13 @@
     }
     function NextServer()
     {
+        serverNumber++;
         if(serverNumber % 2)
         {
             UseVoice("SIDEOUT")   
+            SetCurrentSideOutScore();
         }
-        serverNumber++;
-        SetCurrentSideOutScore();
+        
         SetScoreHTML()
     }
     function SetCurrentSideOutScore()
