@@ -348,7 +348,7 @@
     {
         if(serverNumber != 1) serverNumber--;
 
-        if(serverNumber % 2)
+        if(serverNumber % 2 == 0)
         {
             console.log("YES!")
         }
@@ -357,7 +357,7 @@
     function NextServer()
     {
         serverNumber++;
-        if(serverNumber % 2)
+        if(serverNumber % 2 == 0)
         {
             UseVoice("SIDEOUT")   
             SetCurrentSideOutScore();
