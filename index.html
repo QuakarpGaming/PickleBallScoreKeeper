@@ -336,6 +336,10 @@
                 UseVoice("WIN");
             }
         }
+        else if (scoreToCheck == 1 && otherScore != 0)
+        {
+            UseVoice("OUTOFJAR")
+        }
     }
     ////////////////////////////////
     ////////////////////////////////
@@ -401,12 +405,19 @@
                 stringToSay += document.getElementById("server").innerHTML;
                 if(serverNumber == 1)
                 {
-                    stringToSay = stringToSay.replace("2","Start");
+                    if(stringToSay.split("2").length - 1 < 2)
+                        stringToSay = stringToSay.replace("2","Start");
+                    else
+                        stringToSay = stringToSay.replace("2","two ").replace("2","Start");
+
                 }
                 break;
             case "SIDEOUT":
                 stringToSay += "SIDE OUT!";
                 break
+            case "OUTOFJAR":
+                stringToSay += "They are out of the jar!"
+                break;
             default:
                 break;
         }
