@@ -22,14 +22,14 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="TopServerNameCell"><input type="text" onchange="UpdateServer('S2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 2nd Server" list="names"></td>
+                                <td class="TopServerNameCell"><input type="text" onchange="UpdateServer('S2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 2nd Server" list="names" tabindex="1"></td>
                                 <td class="kitchenLeft" rowspan="2"></td>
                                 <td class="kitchenRight" rowspan="2"></td>
-                                <td class="CellContentRight TopServerNameCell"><input type="text" onchange="UpdateServer('N1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 1st Server" list="names"></td>
+                                <td class="CellContentRight TopServerNameCell"><input type="text" onchange="UpdateServer('N1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 1st Server" list="names" tabindex="3"></td>
                             </tr>
                             <tr>
-                                <td class="BotServerNameCell"><input type="text" onchange="UpdateServer('S1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 1st Server" list="names"></td>
-                                <td class="CellContentRight BotServerNameCell"><input type="text" onchange="UpdateServer('N2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 2nd Server" list="names"></td>
+                                <td class="BotServerNameCell"><input type="text" onchange="UpdateServer('S1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 1st Server" list="names" tabindex="2"></td>
+                                <td class="CellContentRight BotServerNameCell"><input type="text" onchange="UpdateServer('N2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 2nd Server" list="names" tabindex="4"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -336,7 +336,7 @@
                 UseVoice("WIN");
             }
         }
-        else if (scoreToCheck == 1 && otherScore != 0)
+        else if (scoreToCheck == 1)
         {
             UseVoice("OUTOFJAR")
         }
@@ -382,22 +382,13 @@
     /////////voice//////////////////
     ////////////////////////////////
     var syth = window.speechSynthesis;
-    var voices = syth.getVoices();
     function UseVoice(sayWhat)
     {
+
         var stringToSay = ""
         switch (sayWhat) {
             case "WIN":
-                var modServerNumber = serverNumber % 4
-                if(modServerNumber < 2)
-                {
-                    stringToSay += namesDict["N1"] + " and " + namesDict["N2"];
-                }
-                else
-                {
-                    stringToSay += namesDict["S1"] + " and " + namesDict["S2"];
-                }
-                stringToSay += " have won the set";
+                stringToSay += (GetNames() + " have won the set");
                 break;
             case "SCORE":
                 stringToSay += document.getElementById("score").innerHTML.replaceAll("-",".").replaceAll('<img src="pickleJar.png" class="PickleImg">','0')
@@ -416,14 +407,28 @@
                 stringToSay += "SIDE OUT!";
                 break
             case "OUTOFJAR":
-                stringToSay += "They are out of the jar!"
+                stringToSay +=  GetNames() + " are out of the jar!. . . Its all Gravy from here."
                 break;
             default:
                 break;
         }
         var whatToSay = new SpeechSynthesisUtterance(stringToSay);
-            whatToSay.voice = voices[5];
             syth.speak(whatToSay);
+    }
+
+    function GetNames()
+    { 
+        var names = "";
+        var modServerNumber = serverNumber % 4
+        if(modServerNumber < 2)
+        {
+            names += namesDict["N1"] + " and " + namesDict["N2"];
+        }
+        else
+        {
+            names += namesDict["S1"] + " and " + namesDict["S2"];
+        }
+        return names;
     }
     ////////////////////////////////
     ////////////////////////////////
