@@ -1,12 +1,12 @@
-<html>
+<title>Hardest Part of the Sport!</title>
 <header>
-    <title>Hardest Part of the Sport!</title>
     <link rel="Stylesheet" href="Styles.css">
 </header>
+<html>
 <body>
     <nav>
-        <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" ></label></div>
-        <div class="NavCol col-5"><label class="NavLabel">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked></label></div>
+        <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onblur="SetSessionStorage('PLAYTILL',this.value)"></label></div>
+        <div class="NavCol col-5"><label class="NavLabel">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked onchange="SetSessionStorage('WINBY2',this.checked)"></label></div>
         <div class="NavCol col-5"><a class="NavLabel" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
         <div id="playerNames" class="overlay">
             <div class="popup">
@@ -112,6 +112,17 @@
                 }
             })
         }
+
+        var play2 = window.sessionStorage.getItem("PLAYTILL");
+        if (play2 != null) {
+            document.getElementById("playTill").value = play2
+        }
+
+        var winByTwo = window.sessionStorage.getItem("WINBY2");
+        if (winByTwo != null) {
+            document.getElementById("winBy2").checked = winByTwo == "true";
+        }
+
     })
     function UpdateServer(place,name)
     {
@@ -391,17 +402,26 @@
                 stringToSay += (GetNames() + " have won the set");
                 break;
             case "SCORE":
-                stringToSay += document.getElementById("score").innerHTML.replaceAll("-",".").replaceAll('<img src="pickleJar.png" class="PickleImg">','0')
-                stringToSay += ". ";
-                stringToSay += document.getElementById("server").innerHTML;
-                if(serverNumber == 1)
-                {
-                    if(stringToSay.split("2").length - 1 < 2)
-                        stringToSay = stringToSay.replace("2","Start");
-                    else
-                        stringToSay = stringToSay.replace("2","two ").replace("2","Start");
+                stringToSay += CheckSpecialScore();
+                if (stringToSay == "") {
+                    stringToSay += document.getElementById("score").innerHTML.replaceAll("-", "").replaceAll('<img src="pickleJar.png" class="PickleImg">', '0')
 
+                    if (AboutToWin()) {
+                        stringToSay += " Game Point. "
+                    }
+
+                    stringToSay += ". ";
+                    stringToSay += document.getElementById("server").innerHTML;
+                    if (serverNumber == 1) {
+                        if (stringToSay.split("2").length - 1 < 2)
+                            stringToSay = stringToSay.replace("2", "Start");
+                        else
+                            stringToSay = stringToSay.replace("2", "two ").replace("2", "Start");
+
+                    }
                 }
+
+                
                 break;
             case "SIDEOUT":
                 stringToSay += "SIDE OUT!";
@@ -415,7 +435,73 @@
         var whatToSay = new SpeechSynthesisUtterance(stringToSay);
             syth.speak(whatToSay);
     }
+    function CheckSpecialScore()
+    {
+        var returnStr = "";
+        var scoreNumbers = document.getElementById("score").innerHTML.replaceAll("-", "").replaceAll('<img src="pickleJar.png" class="PickleImg">', '0').replaceAll("  ", " ");
+        var scoreNumbersArry = scoreNumbers.split(" ");
+        var score1 = parseInt(scoreNumbersArry[0]);
+        var score2 = parseInt(scoreNumbersArry[1]);
+        var modServerNumber = (serverNumber % 4);
+        var scoreServerNumber = (modServerNumber % 2) + 1;
 
+        if (scoreNumbers === "1 1 1")
+            returnStr += "Ones..."
+
+        else if (scoreNumbers === "1 1 2")
+            returnStr += "Ones on a 2..."
+
+        else if (scoreNumbers === "1 0 1")
+            returnStr += "1 0 1 Class is in session"
+
+        else if (scoreNumbers === "2 2 2")
+            returnStr += "Twos..."
+
+        else if (scoreNumbers === "3 2 1")
+            returnStr += "3 2 1 BLAST OFF!"
+
+        else if (scoreNumbers === "2 2 1")
+            returnStr += "twos on a 1..."
+
+        else if (score1 > 2 && score1 == score2)
+            returnStr += scoreNumbersArry[0] + "s on a " + scoreServerNumber.toString(); 
+
+        else if (scoreNumbers === "4 1 1")
+            returnStr += "What is the 4 1 1... its"
+
+        else if (scoreNumbers === "9 1 1")
+            returnStr += "9 1 1 what is your emergency... the emergency is "
+
+        else if (score1 == 10 && score2 == 4)
+            returnStr += "10 4 over and out on a" + scoreServerNumber.toString(); 
+
+        else if (score1 == 9 && score2 == 5)
+            returnStr += "Working 9 to 5 on a" + scoreServerNumber.toString(); 
+
+        if (returnStr != "") {
+            if (AboutToWin()) {
+                returnStr += " Game Point. "
+            }
+            returnStr += document.getElementById("server").innerHTML;
+        }
+        return returnStr;
+    }
+
+    function AboutToWin()
+    {
+        var scoreNumbers = document.getElementById("score").innerHTML.replaceAll("-", "").replaceAll('<img src="pickleJar.png" class="PickleImg">', '0').replaceAll("  ", " ").split(" ");
+        var playingTill = parseInt(document.getElementById("playTill").value); 
+        var winBy2 = document.getElementById("winBy2").checked;
+        var score1 = parseInt(scoreNumbers[0]);
+        var score2 = parseInt(scoreNumbers[1])
+        if (score1 + 1 == playingTill)
+        {
+            if (!winBy2 || score1 - score2 >= 2)
+                return true;
+        }
+
+        return false;
+    }
     function GetNames()
     { 
         var names = "";
@@ -436,6 +522,10 @@
     function isEven(num)
     {
         return (num & 1) === 0;
+    }
+
+    function SetSessionStorage(what, value) {
+        window.sessionStorage.setItem(what, value);
     }
 </script>
 </html>
