@@ -5,7 +5,7 @@
 <html>
 <body>
     <nav>
-        <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onblur="SetSessionStorage('PLAYTILL',this.value)"></label></div>
+        <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onfocus="BlockKeyPress()" onblur="SetSessionStorage('PLAYTILL', this.value); AllowKeyPress()"></label></div>
         <div class="NavCol col-5"><label class="NavLabel">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked onchange="SetSessionStorage('WINBY2',this.checked)"></label></div>
         <div class="NavCol col-5"><a class="NavLabel" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
         <div id="playerNames" class="overlay">
@@ -16,8 +16,8 @@
                     <table class="CourtTable">
                         <thead>
                             <tr>
-                                <th class="CellContentLeft" colspan="2">South Team</td>
-                                <th class="CellContentRight" colspan="2">North Team</td>
+                                <th class="CellContentLeft" colspan="2">South Team</th>
+                                <th class="CellContentRight" colspan="2">North Team</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,8 +50,7 @@
                         <div>Spacebar: Annouces the score out loud!</div>
                         <div>W: Increaess the Receiving Team's score</div>
                         <div>S: Decreases the Receiving Team's score</div>
-                   </div>
-                </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,7 +74,19 @@
     <!--Data Lists-->
     <datalist id="names">
     </datalist>
+    <!--Winner Popup-->
+    <div id="WinnerPopup" class="overlay">
+    <div class="popup">
+        <h2>Winners</h2>
+        <a class="close" href="#" onclick="window.location = '#';location.reload()">&times;</a>
+        <div class="content">
+            <div class="contentColFlex" id="WinnerText">
+            </div>
+        </div>
+    </div>
+    </div>
 </body>
+</html>
 <script>
     //Globals//////////
     var namesDict ={
@@ -344,6 +355,7 @@
         {
             if(scoreToCheck - otherScore >= 2 || !winBy2)
             {
+                OpenWinnerPopup();
                 UseVoice("WIN");
             }
         }
@@ -351,6 +363,10 @@
         {
             UseVoice("OUTOFJAR")
         }
+    }
+    function OpenWinnerPopup() {
+        document.getElementById("WinnerText").innerHTML = GetNames() + " Have won the set."
+        window.location = "#WinnerPopup";
     }
     ////////////////////////////////
     ////////////////////////////////
@@ -528,4 +544,4 @@
         window.sessionStorage.setItem(what, value);
     }
 </script>
-</html>
+
