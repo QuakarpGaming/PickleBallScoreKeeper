@@ -5,6 +5,10 @@ body, nav{
     flex-direction: column;
     min-width: 600px;
 }
+body{
+    height:100%;
+    border: 0 !important;
+}
 a{
     color: white;
 }
@@ -244,3 +248,10 @@ input[list]::-webkit-calendar-picker-indicator {
         max-height: 30%;
         overflow: auto;
     }
+
+.greenBorder {
+    border: solid 0.5vh #05ff1a;
+}
+.greenText {
+    color: #05ff1a;
+}

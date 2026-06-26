@@ -1,11 +1,11 @@
 <title>Hardest Part of the Sport!</title>
 <header>
-    <link rel="Stylesheet" href="Styles.css">
     <script src="theJS.js"></script>
+    <link rel="Stylesheet" href="Styles.css">
 </header>
 <html>
-<body>
-    <nav>
+<body class="greenText">
+    <nav class="greenBorder">
         <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onfocus="BlockKeyPress()" onblur="SetSessionStorage('PLAYTILL', this.value); AllowKeyPress()"></label></div>
         <div class="NavCol col-5"><label class="NavLabel">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked onchange="SetSessionStorage('WINBY2',this.checked)"></label></div>
         <div class="NavCol col-5"><a class="NavLabel" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
@@ -67,30 +67,13 @@
                 </div>
             </div>
         </div>
-        <div class="NavCol col-5"><a class="NavLabel" href="devBoard.html" onclick="BlockKeyPress()">Test Board</a></div>
+        <div class="NavCol col-5"><a class="NavLabel" href="index.html" onclick="BlockKeyPress()">Old Board</a></div>
 
     </nav>
-    <div class="Score" id="score">
+    <div class="Score greenBorder" id="score">
+
     </div>
-    <div class="Server" id="server">
-    </div>
-    <!--Data Lists-->
-    <datalist id="names">
-    </datalist>
-    <!--Winner Popup-->
-    <div id="WinnerPopup" class="overlay">
-    <div class="popup">
-        <div class="content">
-            <div class="contentColFlex" id="WinnerText">
-                
-            </div>
-            <div class="WinnerPopupButtons">
-            <button class='WinnerButton' onclick="window.location = '#';location.reload()">Next Game</button>
-            <button class='WinnerButton' onclick="window.location = '#'">Close</button>
-        </div>
-        </div>
-    </div>
+    <div class="Server greenBorder" id="server">
     </div>
 </body>
 </html>
-
