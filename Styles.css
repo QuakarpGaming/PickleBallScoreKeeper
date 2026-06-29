@@ -6,20 +6,33 @@ body, nav{
     min-width: 600px;
 }
 body{
-    height:100%;
+    height: 100vh;
     border: 0 !important;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 a{
     color: white;
 }
 nav{
-    height: 5%;
+    height: 5vh;
     display: flex;
     flex-direction: row;
-    border: 0.5em solid white;
+    border: clamp(0.25em, 1vw, 1em) solid white;
     flex-wrap: nowrap;
     align-items: center;
     justify-items: center;
+    transition: height 0.3s ease, opacity 0.3s ease;
+    gap: clamp(0.5rem, 2vw, 2rem);
+    padding: 0 clamp(0.5rem, 1vw, 1rem);
+}
+nav.hidden{
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    border: none;
+    pointer-events: none;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -41,33 +54,38 @@ input[list]::-webkit-calendar-picker-indicator {
 /*custom class start*/
 /********************/
 .NavInput{
-    
     text-align: center;
     margin-top: auto;
     margin-bottom: auto;
     margin-right: 0;
-    height: 4vh;
-    width: 5vh;
-    font-size: 3vh;
+    height: clamp(1.4rem, max(3.5vh, 1.85vw), 5.7rem);
+    width: clamp(1.4rem, max(4.7vh, 3.8vw), 5.7rem);
+    font-size: clamp(0.7rem, max(2.85vh, 2.375vw), 2.375rem);
 }
 .NavLabel{
     height: 98%;
-    font-size: 4vh;
+    font-size: clamp(0.7rem, max(3.8vh, 2.85vw), 2.375rem);
     display: flex;
 }
 .NavCol{
     display: flex;
     flex-direction: row;
     justify-content: center;
+    flex: 1;
+    min-width: 0;
 }
 .CourtTable{
     width: 98%;
     height: 80%;
+    border-collapse: collapse;
 }
 .CourtTable > tbody > tr> td{
     padding: 0;
 }
 .CourtTable > tbody > tr{
+    height: 40%;
+}
+.cell-40h {
     height: 40%;
 }
 .CourtTable > tbody > tr> td > input{
@@ -147,7 +165,7 @@ input[list]::-webkit-calendar-picker-indicator {
     align-content: flex-start;
 }
 .Score{
-        height: 78%;
+    flex: 1;
     border: 1vh solid white;
     font-size: calc(3rem + 16vw);
     text-align: center;
@@ -155,10 +173,16 @@ input[list]::-webkit-calendar-picker-indicator {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
+}
+.ScoreV2 {
+    flex-wrap: wrap;
+    align-content: flex-start !important;
 }
 .Server
 {
-    height: 10%;
+    flex: 0 0 auto;
+    min-height: 10%;
     border: 1vh solid white;
     text-align: center;
     align-content: center;
@@ -254,4 +278,39 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 .greenText {
     color: #05ff1a;
+}
+
+
+/***********************/
+.table-left {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.table-right {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.cell-left {
+    text-align: left;
+    padding-left: 1vh;
+}
+
+.cell-right {
+    text-align: right;
+    padding-right: 1vh;
+}
+
+.container-15 {
+    width: 15%;
+    flex: 0 0 15%;
+    min-width: 15%;
+}
+
+.container-15h {
+    height: 15%;
+    flex: 0 0 15%;
+    min-height: 15%;
+}
 }

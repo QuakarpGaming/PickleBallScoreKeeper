@@ -1,18 +1,21 @@
 <title>Hardest Part of the Sport!</title>
 <header>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="theJS.js"></script>
     <link rel="Stylesheet" href="Styles.css">
 </header>
 <html>
 <body class="greenText">
+    <input type="checkbox" checked id="useV2Code" hidden />
     <nav class="greenBorder">
-        <div class="NavCol col-5"><label class="NavLabel">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onfocus="BlockKeyPress()" onblur="SetSessionStorage('PLAYTILL', this.value); AllowKeyPress()"></label></div>
-        <div class="NavCol col-5"><label class="NavLabel">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked onchange="SetSessionStorage('WINBY2',this.checked)"></label></div>
-        <div class="NavCol col-5"><a class="NavLabel" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
+        <div class="NavCol col-5"><label class="NavLabel greenText">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onfocus="BlockKeyPress()" onblur="SetSessionStorage('PLAYTILL', this.value); AllowKeyPress()"></label></div>
+        <div class="NavCol col-5"><label class="NavLabel greenText">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked onchange="SetSessionStorage('WINBY2',this.checked)"></label></div>
+        <div class="NavCol col-5"><a class="NavLabel greenText" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
         <div id="playerNames" class="overlay">
             <div class="popup">
                 <h2>Enter Player Names</h2>
-                <a class="close" href="#" onclick="AllowKeyPress();SetScoreHTML();">&times;</a>
+                <a class="close" href="#" onclick="AllowKeyPress();SetScoreHTMLV2();">&times;</a>
                 <div class="content">
                     <table class="CourtTable">
                         <thead>
@@ -23,21 +26,21 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="TopServerNameCell"><input type="text" onchange="UpdateServer('S2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 2nd Server" list="names" tabindex="1"></td>
+                                <td class="TopServerNameCell"><input type="text" onchange="UpdateServerV2('S2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 2nd Server" list="names" tabindex="1"></td>
                                 <td class="kitchenLeft" rowspan="2"></td>
                                 <td class="kitchenRight" rowspan="2"></td>
-                                <td class="CellContentRight TopServerNameCell"><input type="text" onchange="UpdateServer('N1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 1st Server" list="names" tabindex="3"></td>
+                                <td class="CellContentRight TopServerNameCell"><input type="text" onchange="UpdateServerV2('N1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 1st Server" list="names" tabindex="3"></td>
                             </tr>
                             <tr>
-                                <td class="BotServerNameCell"><input type="text" onchange="UpdateServer('S1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 1st Server" list="names" tabindex="2"></td>
-                                <td class="CellContentRight BotServerNameCell"><input type="text" onchange="UpdateServer('N2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 2nd Server" list="names" tabindex="4"></td>
+                                <td class="BotServerNameCell"><input type="text" onchange="UpdateServerV2('S1', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="South Side 1st Server" list="names" tabindex="2"></td>
+                                <td class="CellContentRight BotServerNameCell"><input type="text" onchange="UpdateServerV2('N2', this.value)" onfocusout="UpdateServerAndDataList(this.value)" placeholder="North Side 2nd Server" list="names" tabindex="4"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <div class="NavCol col-5"><a class="NavLabel" href="#controls" onclick="BlockKeyPress()">Controls</a></div>
+        <div class="NavCol col-5"><a class="NavLabel greenText" href="#controls" onclick="BlockKeyPress()">Controls</a></div>
         <div id="controls" class="overlay">
             <div class="popup">
                 <h2>Controls</h2>
@@ -55,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <div class="NavCol col-5"><a class="NavLabel" href="#NH" onclick="BlockKeyPress()">Name History</a></div>
+        <div class="NavCol col-5"><a class="NavLabel greenText" href="#NH" onclick="BlockKeyPress()">Name History</a></div>
         <div id="NH" class="overlay">
             <div class="popup">
                 <h2>Name History</h2>
@@ -67,13 +70,86 @@
                 </div>
             </div>
         </div>
-        <div class="NavCol col-5"><a class="NavLabel" href="index.html" onclick="BlockKeyPress()">Old Board</a></div>
+        <div class="NavCol col-5"><a class="NavLabel greenText" href="index.html" onclick="BlockKeyPress()">Old Board</a></div>
 
     </nav>
-    <div class="Score greenBorder" id="score">
-
+    <div class="Score ScoreV2 greenBorder" id="score">
+        <table style="width: 100%; height: 100%;" class="">
+            <thead>
+                <tr>
+                    <th colspan="2" class="cell-left container-15h">
+                        <label class="greenText NavLabel">South Team<input class="greenText NavInput" type="number" id="southScore" readonly disabled /></label>
+                    </th>
+                    <th colspan="2" class="cell-right container-15h">
+                        <label class="greenText NavLabel">North Team<input class="greenText NavInput" type="number" id="northScore" readonly disabled /></label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="cell-left greenBorder cell-40h">
+                        <input type="text" id="southLeftSide" readonly disabled />
+                    </td>
+                    <td rowspan="2" class="greenBorder"></td>
+                    <td rowspan="2" class="greenBorder"></td>
+                    <td class="cell-right greenBorder cell-40h">
+                        <input type="text" id="northRightSide" readonly disabled />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="greenBorder cell-left cell-40h">
+                        <input type="text" id="southRightSide" readonly disabled />
+                    </td>
+                    <td class="greenBorder cell-right cell-40h">
+                        <input type="text" id="northLeftSide" readonly disabled />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div class="Server greenBorder" id="server">
     </div>
+    <!--Data Lists-->
+    <datalist id="names">
+    </datalist>
+    <script>
+        (function () {
+            const nav = document.querySelector('nav');
+            let hideTimeout;
+
+            function isOverlayOpen() {
+                const overlays = document.querySelectorAll('.overlay:target');
+                return overlays.length > 0;
+            }
+
+            function showNav() {
+                if (isOverlayOpen()) return; // Don't hide nav if overlay is open
+                nav.classList.remove('hidden');
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    if (!isOverlayOpen()) {
+                        nav.classList.add('hidden');
+                    }
+                }, 2000);
+            }
+
+            document.addEventListener('mousemove', showNav);
+
+            // Hide nav initially after 2s if no movement
+            hideTimeout = setTimeout(() => {
+                if (!isOverlayOpen()) {
+                    nav.classList.add('hidden');
+                }
+            }, 2000);
+
+            // Show nav when overlay opens
+            document.addEventListener('click', (e) => {
+                if (e.target.matches('.overlay a[href^="#"]')) {
+                    nav.classList.remove('hidden');
+                    clearTimeout(hideTimeout);
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

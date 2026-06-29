@@ -160,6 +160,11 @@ function removeName(name) {
 ////////////////////////////////
 
 function SetScoreHTML() {
+    var useV2 = getElementById("useV2").checked;
+    if (usev2 != null && useV2 != undefined && useV2 == true) {
+        SetScoreHTMLV2();
+        return;
+    }
     var scoreHTML = ""
     var serverNameToShow = "";
 
@@ -195,9 +200,11 @@ function SetScoreHTML() {
     }
     scoreHTML += ' - ';
     scoreHTML += serverNumber != 1 ? scoreServerNumber.toString() : "2"
+    
 
     document.getElementById("score").innerHTML = scoreHTML
     document.getElementById("server").innerHTML = serverNameToShow + " To Serve"
+
 
 }
 function UpScore() {
@@ -424,4 +431,33 @@ function isEven(num) {
 
 function SetSessionStorage(what, value) {
     window.sessionStorage.setItem(what, value);
+}
+
+
+///////////////////////////////////////
+//v2 code
+///////////////////////////////////////
+
+var northServers = ["", ""];
+var southServers = ["", ""];
+var currentServingSide = "N";
+var currentServerNumber = 1;
+var onStart = true;
+var serverNameSet = false;
+function SetScoreHTMLV2() {
+    if (onStart) {
+        document.getElementById("server").innerHTML = northServers[0] + " To Serve"
+    }
+    else if (currentServingSide == "N") {
+    }
+    else if (currentServingSide == "S") {
+    }
+}
+
+function UpdateServerV2(place, name) {
+    if (place.startsWith("N")) {
+        northServers[parseInt(place.slice(1)) - 1] = name;
+    } else if (place.startsWith("S")) {
+        southServers[parseInt(place.slice(1)) - 1] = name;
+    }
 }
