@@ -25,6 +25,7 @@ var numberToStringDic = {
     10: "tens",
     11: "Elevenies",
 }
+var useV2 = false;
 ///////////////////////////
 document.addEventListener("DOMContentLoaded", (event) => {
     var namesToLoadStr = window.localStorage.getItem("names")
@@ -53,7 +54,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     if (winByTwo != null) {
         document.getElementById("winBy2").checked = winByTwo == "true";
     }
-
+    var checkV2 = document.getElementById("useV2Code");
+    if (checkV2 != null && checkV2 != undefined && checkV2.checked == true) {
+        useV2 = checkV2.checked;
+    }
 })
 function UpdateServer(place, name) {
     namesDict[place] = name;
@@ -73,6 +77,10 @@ function AllowKeyPress(setNames = false) {
 
 function KeyPress(e) {
     if (takeInput) {
+        if (useV2 != null && useV2 != undefined && useV2 == true) {
+            KeyPressV2(e);
+            return;
+        }
         if (e.code === "Space") {
             UseVoice("SCORE");
         }
@@ -160,8 +168,8 @@ function removeName(name) {
 ////////////////////////////////
 
 function SetScoreHTML() {
-    var useV2 = getElementById("useV2").checked;
-    if (usev2 != null && useV2 != undefined && useV2 == true) {
+   
+    if (useV2 != null && useV2 != undefined && useV2 == true) {
         SetScoreHTMLV2();
         return;
     }
@@ -267,7 +275,21 @@ function CheckWinner() {
     }
 }
 function OpenWinnerPopup() {
-    document.getElementById("WinnerText").innerHTML = GetNames() + " Have won the set."
+    var winnerStr = "";
+    if (useV2) {
+        if (currentServingSide == "N") {
+            winnerStr = northServers[0] + " and " + northServers[1];
+        }
+        else {
+            winnerStr = southServers[0] + " and " + southServers[1];
+        }
+    }
+    else {
+        winnerStr = GetNames();
+    }
+    winnerStr += " Have won the set."
+    document.getElementById("WinnerText").innerHTML = winnerStr;
+
     window.location = "#WinnerPopup";
 }
 ////////////////////////////////
@@ -311,19 +333,24 @@ function UseVoice(sayWhat) {
     var stringToSay = ""
     switch (sayWhat) {
         case "WIN":
-            stringToSay += (GetNames() + " have won the set");
+            if (useV2) {
+                if (currentServingSide == "N") {
+                    stringToSay += northServers[0] + " and " + northServers[1] + " have won the set";
+                }
+                else {
+                    stringToSay += southServers[0] + " and " + southServers[1] + " have won the set";
+                }
+            }
+            else {
+                stringToSay += (GetNames() + " have won the set");
+            }
             break;
         case "SCORE":
-            stringToSay += CheckSpecialScore();
-            if (stringToSay == "") {
-                stringToSay += document.getElementById("score").innerHTML.replaceAll("-", "").replaceAll('<img src="pickleJar.png" class="PickleImg">', '0')
-
-                if (AboutToWin()) {
-                    stringToSay += " Game Point. "
-                }
-
-                stringToSay += ". ";
-                stringToSay += document.getElementById("server").innerHTML;
+            if (useV2) {
+                stringToSay += CheckSpecialScore();
+            }
+            else {
+                stringToSay += CheckSpecialScore();
                 if (serverNumber == 1) {
                     if (stringToSay.split("2").length - 1 < 2)
                         stringToSay = stringToSay.replace("2", "Start");
@@ -331,15 +358,34 @@ function UseVoice(sayWhat) {
                         stringToSay = stringToSay.replace("2", "two ").replace("2", "Start");
 
                 }
-            }
+                if (stringToSay == "") {
 
+                  
+
+                    stringToSay += ". ";
+                    stringToSay += document.getElementById("server").innerHTML;
+                    
+                }
+            }
 
             break;
         case "SIDEOUT":
             stringToSay += "SIDE OUT!";
             break
         case "OUTOFJAR":
-            stringToSay += GetNames() + " are out of the jar!. . . Its all Gravy from here."
+            if (useV2) {
+                if (currentServingSide == "N") {
+                    stringToSay += northServers[0] + " and " + northServers[1];
+                }
+                else {
+                    stringToSay += southServers[0] + " and " + southServers[1];
+                }
+                stringToSay += " are out of the jar!. . . Its all Gravy from here."
+            }
+            else {
+                stringToSay += GetNames() + " are out of the jar!. . . Its all Gravy from here."
+            }
+
             break;
         default:
             break;
@@ -348,13 +394,27 @@ function UseVoice(sayWhat) {
     syth.speak(whatToSay);
 }
 function CheckSpecialScore() {
-    var returnStr = "";
+    if (useV2) {
+        if (currentServingSide == "N") {
+            return processSpecialScoreStr(nScore + " " + sScore + " " + currentServerNumber, nScore, sScore) + document.getElementById("server").innerHTML;
+        }
+        else {
+            return processSpecialScoreStr(sScore + " " + nScore + " " + currentServerNumber, sScore, nScore) + document.getElementById("server").innerHTML;
+        }
+    }
+    else {
     var scoreNumbers = document.getElementById("score").innerHTML.replaceAll("-", "").replaceAll('<img src="pickleJar.png" class="PickleImg">', '0').replaceAll("  ", " ");
     var scoreNumbersArry = scoreNumbers.split(" ");
     var score1 = parseInt(scoreNumbersArry[0]);
     var score2 = parseInt(scoreNumbersArry[1]);
     var modServerNumber = (serverNumber % 4);
     var scoreServerNumber = (modServerNumber % 2) + 1;
+
+    return processSpecialScoreStr(scoreNumbers, score1, score2) + document.getElementById("server").innerHTML;
+    }
+}
+function processSpecialScoreStr(scoreNumbers, score1, score2) {
+    var returnStr = "";
 
     if (scoreNumbers === "1 1 1")
         returnStr += "Ones..."
@@ -390,14 +450,32 @@ function CheckSpecialScore() {
         returnStr += "Working 9 to 5 on a" + scoreServerNumber.toString();
 
     if (returnStr != "") {
-        if (AboutToWin()) {
+        if (AboutToWin() || AbouttowinV2()) {
             returnStr += " Game Point. "
         }
-        returnStr += document.getElementById("server").innerHTML;
     }
+    else {
+        returnStr = scoreNumbers + " ";
+    }
+
+
+    if (!useV2 && serverNumber == 1)
+    {
+        if (returnStr.split("2").length - 1 < 2)
+            returnStr = returnStr.replace("2", "Start");
+        else
+            returnStr = returnStr.replace("2", "two ").replace("2", "Start");
+    }
+    else (useV2 && onStart)
+    {
+        if (returnStr.split("1").length - 1 < 2)
+            returnStr = returnStr.replace("1", "Start");
+        else
+            returnStr = returnStr.replace("1", "one ").replace("1", "Start");
+    }
+
     return returnStr;
 }
-
 function AboutToWin() {
     var scoreNumbers = document.getElementById("score").innerHTML.replaceAll("-", "").replaceAll('<img src="pickleJar.png" class="PickleImg">', '0').replaceAll("  ", " ").split(" ");
     var playingTill = parseInt(document.getElementById("playTill").value);
@@ -442,18 +520,54 @@ var northServers = ["", ""];
 var southServers = ["", ""];
 var currentServingSide = "N";
 var currentServerNumber = 1;
+var lastSideOutNScore = 0;
+var lastSideOutSScore = 0;
 var onStart = true;
 var serverNameSet = false;
+var scoreHistory = new Array();
 function SetScoreHTMLV2() {
+    //set up the server text box at the bottom of the screen
+    var ServerName = GetServerNameV2();
+    document.getElementById("server").innerHTML = `${ServerName} To Serve`
+
+
+    //set up the text boxes for the server names
+
+    var SL = document.getElementById("southLeftSide").value = southServers[isEven(sScore) ? 1 : 0] + " " + (southServers[isEven(sScore) ? 1 : 0] == ServerName ? "<--" : "");
+    var SR = document.getElementById("southRightSide").value = southServers[isEven(sScore) ? 0 : 1] + " " + (southServers[isEven(sScore) ? 0 : 1] == ServerName ? "<--" : "");
+
+    var NL = document.getElementById("northLeftSide").value = northServers[isEven(nScore) ? 1 : 0] + " " + (northServers[isEven(nScore) ? 1 : 0] == ServerName ? "<--" : "");
+    var NR = document.getElementById("northRightSide").value = northServers[isEven(nScore) ? 0 : 1] + " " + (northServers[isEven(nScore) ? 0 : 1] == ServerName ? "<--" : "");
+    
+}
+function GetServerNameV2() {
+    var serverNumberSlotToShow = 0;
+    if (currentServingSide == "N" && isEven(lastSideOutNScore) && currentServerNumber == 2) {
+        serverNumberSlotToShow = 1;
+    }
+    else if (currentServingSide == "N" && !isEven(lastSideOutNScore) && currentServerNumber == 1) {
+        serverNumberSlotToShow = 1;
+    }
+    else if (currentServingSide == "S" && isEven(lastSideOutSScore) && currentServerNumber == 2) {
+        serverNumberSlotToShow = 1;
+    }
+    else if (currentServingSide == "S" && !isEven(lastSideOutSScore) && currentServerNumber == 1) {
+        serverNumberSlotToShow = 1;
+    }
+
+    var ServerName = "";
     if (onStart) {
-        document.getElementById("server").innerHTML = northServers[0] + " To Serve"
+        ServerName = northServers[0];
     }
     else if (currentServingSide == "N") {
+        ServerName = northServers[serverNumberSlotToShow];
     }
     else if (currentServingSide == "S") {
+        ServerName = southServers[serverNumberSlotToShow];
     }
-}
 
+    return ServerName;
+}
 function UpdateServerV2(place, name) {
     if (place.startsWith("N")) {
         northServers[parseInt(place.slice(1)) - 1] = name;
@@ -461,3 +575,224 @@ function UpdateServerV2(place, name) {
         southServers[parseInt(place.slice(1)) - 1] = name;
     }
 }
+function KeyPressV2(e) {
+    //the check if we can take the input is done in the parent function , so we don't need to check it here
+    if (e.code === "Space") {
+        UseVoice("SCORE");
+    }
+    else if (e.code === "ArrowUp") {
+        UpScoreV2();
+    }
+    else if (e.code === "ArrowDown") {
+        DownScoreV2();
+    }
+    else if (e.code === "ArrowRight") {
+        NextServerV2();
+    }
+    else if (e.code === "ArrowLeft") {
+        LastServerV2();
+    }
+    else if (e.code === "KeyW") {
+        UpOtherScoreV2();
+    }
+    else if (e.code === "KeyS") {
+        DownOtherScoreV2();
+    }
+}
+function AbouttowinV2() {
+    var returnVal = false;  
+    if (useV2) {
+        var playingTill = parseInt(document.getElementById("playTill").value);
+        var winBy2 = document.getElementById("winBy2").checked;
+        if (currentServingSide == "N") {
+            if(nScore + 1 >= playingTill && ( !winBy2 || nScore - sScore >= 2 )) {
+                returnVal = true;
+            }
+        }
+        else {
+            if (sScore + 1 >= playingTill && (!winBy2 || sScore - nScore >= 2)) {
+                returnVal = true;
+            }
+        }
+    }
+    return returnVal;
+}
+function UpScoreV2() {
+    if (currentServingSide == "N") {
+        nScore++;
+        document.getElementById("northScore").value = nScore;
+    }
+    else {
+        sScore++;
+        document.getElementById("southScore").value = sScore;
+    }
+    if (CheckWinnerV2()) {
+        OpenWinnerPopup()
+    }
+    else if (PlayOutOfJarV2()) {
+        UseVoice("OUTOFJAR")
+    }
+
+    SetScoreHTMLV2();
+}
+function CheckWinnerV2() {
+    var returnVal = false;
+    var playingTill = parseInt(document.getElementById("playTill").value);
+    var winBy2 = document.getElementById("winBy2").checked;
+
+    if (currentServingSide == "N") {
+        if (nScore >= playingTill && (!winBy2 || nScore - sScore >= 2)) {
+            returnVal = true;
+        }
+    }
+    else {
+         if (sScore >= playingTill && (!winBy2 || sScore - nScore >= 2)) {
+            returnVal = true;
+        }
+    }
+    return returnVal;
+}
+
+function PlayOutOfJarV2() {
+    var returnVal = false;
+    if (currentServingSide == "N" && nScore == 1) {
+        returnVal = true;
+    }
+    else  if (currentServingSide == "S" && sScore == 1) {
+            returnVal = true;
+        }
+    return returnVal;
+}
+function DownScoreV2() {
+    if (currentServingSide == "N") {
+        nScore--;
+        if (nScore < 0) nScore = 0;
+        document.getElementById("northScore").value = nScore;
+    }
+    else {
+        sScore--;
+        if (sScore < 0) sScore = 0;
+        document.getElementById("southScore").value = sScore;
+    }
+
+    //no need to check for winner or out of jar here since we are going down in score
+
+    //update the score display
+    SetScoreHTMLV2();
+}
+function UpOtherScoreV2() {
+    if (currentServingSide == "N") {
+        sScore++;
+        document.getElementById("southScore").value = sScore;
+    }
+    else {
+        nScore++;
+        document.getElementById("northScore").value = nScore;
+    }
+    SetScoreHTMLV2();
+}
+
+function DownOtherScoreV2() {
+    if (currentServingSide == "N") {
+        sScore--;
+        if (sScore < 0) sScore = 0;
+        document.getElementById("southScore").value = sScore;
+    }
+    else {
+        nScore--;
+        if (nScore < 0) nScore = 0;
+        document.getElementById("northScore").value = nScore;
+    }
+    //update the score display
+    SetScoreHTMLV2();
+}
+function NextServerV2() {
+    AddHistoryRow();
+    currentServerNumber++;
+    if (currentServerNumber > 2 || onStart) {
+        currentServerNumber = 1;
+        onStart = false;
+        if (currentServingSide == "N") {
+            lastSideOutNScore = nScore;
+        }
+        else {
+            lastSideOutSScore = sScore;
+        }
+        currentServingSide = currentServingSide == "N" ? "S" : "N";
+        UseVoice("SIDEOUT");
+
+    }
+    SetScoreHTMLV2();
+}
+function AddHistoryRow() {
+    var scoreToSave = "";
+    var scoreArray = CheckSpecialScore().match(/\d/g)?.slice(0, 3);
+    for (var i = 0; i < scoreArray.length; i++) {
+        scoreToSave += ((i === scoreArray.length && onStart) ? "Start" : scoreArray[i]) + (i !== scoreArray.length - 1 ? "-" : "");
+    }
+    scoreHistory.push(`"Server": "${GetServerNameV2()}", "Score": "${scoreToSave}${scoreArray.length === 2 ? "-Start" : ""}", "lastSideOutScore": ${currentServingSide === "N" ? lastSideOutNScore : lastSideOutSScore}`);
+}
+function LastServerV2() {
+    if (!onStart) {
+        currentServerNumber--;
+        if (currentServerNumber < 1) {
+            currentServerNumber = 2;
+            var lastServerData = JSON.parse("{" + scoreHistory.pop() + "}");
+            currentServingSide = currentServingSide == "N" ? "S" : "N";
+            if (currentServingSide == "N") {
+                lastSideOutNScore = lastServerData.lastSideOutScore;
+            }
+            else {
+                lastSideOutSScore = lastServerData.lastSideOutScore;
+            }
+
+            if (lastServerData.Score.includes("Start")) {
+                onStart = true;
+                currentServerNumber = 1;
+            }
+        }
+        SetScoreHTMLV2();
+    }
+}
+
+function checkDupServerNames() {
+    var allNames = northServers.concat(southServers).reverse();
+    var foundNames = {};
+
+    for (var i = 0; i < allNames.length; i++) {
+        if (foundNames[allNames[i]]) {
+            foundNames[allNames[i]]++;
+        } else {
+            foundNames[allNames[i]] = 1;
+        }
+    }
+    
+
+    Object.keys(foundNames).forEach(function (key) {
+        let o = 1;
+        let stoppingPoint = foundNames[key];
+        while (o <= stoppingPoint) {
+            var index = allNames.lastIndexOf(key);
+            switch (index) {
+                case 3:
+                    northServers[0] = northServers[0] + ` (${o})`;
+                    break;
+                case 2:
+                    northServers[1] = northServers[1] + ` (${o})`;
+                    break;
+                case 1:
+                    southServers[0] = southServers[0] + ` (${o})`;
+                    break;
+                case 0:
+                    southServers[1] = southServers[1] + ` (${o})`;
+                    break
+                default:
+                    break;
+            }
+            o++;
+            allNames.splice(index, 1);
+        }
+    })
+    
+}
+

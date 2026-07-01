@@ -15,7 +15,7 @@
         <div id="playerNames" class="overlay">
             <div class="popup">
                 <h2>Enter Player Names</h2>
-                <a class="close" href="#" onclick="AllowKeyPress();SetScoreHTMLV2();">&times;</a>
+                <a class="close" href="#" onclick="AllowKeyPress();checkDupServerNames();SetScoreHTMLV2();">&times;</a>
                 <div class="content">
                     <table class="CourtTable">
                         <thead>
@@ -76,32 +76,32 @@
     <div class="Score ScoreV2 greenBorder" id="score">
         <table style="width: 100%; height: 100%;" class="">
             <thead>
-                <tr>
+                <tr class="">
                     <th colspan="2" class="cell-left container-15h">
-                        <label class="greenText NavLabel">South Team<input class="greenText NavInput" type="number" id="southScore" readonly disabled /></label>
+                        <label class="greenText NavLabel ScoreV2ScoreLabel">South Team<input class="greenInput NavInput ScoreV2ScoreInput" type="number" id="southScore" readonly disabled value="0" /></label>
                     </th>
                     <th colspan="2" class="cell-right container-15h">
-                        <label class="greenText NavLabel">North Team<input class="greenText NavInput" type="number" id="northScore" readonly disabled /></label>
+                        <label class="greenText NavLabel ScoreV2ScoreLabel">North Team<input class="greenInput NavInput ScoreV2ScoreInput" type="number" id="northScore" readonly disabled value="0" /></label>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="cell-left greenBorder cell-40h">
-                        <input type="text" id="southLeftSide" readonly disabled />
+                <tr class="">
+                    <td class="cell-left greenBorder ScoreV2BaselineBox">
+                        <input class="greenInput serverNameBox cell-left" type="text" id="southLeftSide" readonly disabled />
                     </td>
                     <td rowspan="2" class="greenBorder"></td>
                     <td rowspan="2" class="greenBorder"></td>
-                    <td class="cell-right greenBorder cell-40h">
-                        <input type="text" id="northRightSide" readonly disabled />
+                    <td class="cell-right greenBorder ScoreV2BaselineBox">
+                        <input class="greenInput serverNameBox cell-right" type="text" id="northRightSide" readonly disabled />
                     </td>
                 </tr>
-                <tr>
-                    <td class="greenBorder cell-left cell-40h">
-                        <input type="text" id="southRightSide" readonly disabled />
+                <tr class="">
+                    <td class="greenBorder cell-left ScoreV2BaselineBox">
+                        <input class="greenInput serverNameBox cell-left" type="text" id="southRightSide" readonly disabled />
                     </td>
-                    <td class="greenBorder cell-right cell-40h">
-                        <input type="text" id="northLeftSide" readonly disabled />
+                    <td class="greenBorder cell-right ScoreV2BaselineBox">
+                        <input class="greenInput serverNameBox cell-right" type="text" id="northLeftSide" readonly disabled />
                     </td>
                 </tr>
             </tbody>
@@ -112,6 +112,34 @@
     <!--Data Lists-->
     <datalist id="names">
     </datalist>
+    <!--Winner Popup-->
+    <div id="WinnerPopup" class="overlay">
+        <div class="popup">
+            <div class="content">
+                <div class="contentColFlex" id="WinnerText">
+
+                </div>
+                <div class="WinnerPopupButtons">
+                    <button class='WinnerButton' onclick="window.location = '#';location.reload()">Next Game</button>
+                    <button class='WinnerButton' onclick="window.location = '#'">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Winner Popup-->
+    <div id="WinnerPopup" class="overlay">
+        <div class="popup">
+            <div class="content">
+                <div class="contentColFlex" id="WinnerText">
+
+                </div>
+                <div class="WinnerPopupButtons">
+                    <button class='WinnerButton' onclick="window.location = '#';location.reload()">Next Game</button>
+                    <button class='WinnerButton' onclick="window.location = '#'">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         (function () {
             const nav = document.querySelector('nav');

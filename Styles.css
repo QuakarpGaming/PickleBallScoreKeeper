@@ -279,7 +279,17 @@ input[list]::-webkit-calendar-picker-indicator {
 .greenText {
     color: #05ff1a;
 }
-
+.greenInput {
+    border: solid 0.5vh #05ff1a;
+    color: #05ff1a;
+    background-color: black;
+}
+.serverNameBox {
+    font-size: 5em;
+    width: 50%;
+    padding: 0;
+    border: 0;
+}
 
 /***********************/
 .table-left {
@@ -313,4 +323,19 @@ input[list]::-webkit-calendar-picker-indicator {
     flex: 0 0 15%;
     min-height: 15%;
 }
+.ScoreV2BaselineBox {
+    width: 43%;
+}
+.ScoreV2ScoreInput {
+    border: 0 !important;
+    height: 23vh;
+    width: 23vh;
+    font-size: 23vh;
+}
+.ScoreV2ScoreLabel {
+    display: flex;
+    font-size: min(5vw, 11vh);
+    margin-top: auto;
+    margin-bottom: auto;
+    align-items: center;
 }
