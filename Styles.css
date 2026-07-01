@@ -274,10 +274,10 @@ input[list]::-webkit-calendar-picker-indicator {
     }
 
 .greenBorder {
-    border: solid 0.5vh #05ff1a;
+    border: solid 0.5vh #05ff1a !important;
 }
 .greenText {
-    color: #05ff1a;
+    color: #05ff1a !important;
 }
 .greenInput {
     border: solid 0.5vh #05ff1a;

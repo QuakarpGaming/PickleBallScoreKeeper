@@ -396,10 +396,10 @@ function UseVoice(sayWhat) {
 function CheckSpecialScore() {
     if (useV2) {
         if (currentServingSide == "N") {
-            return processSpecialScoreStr(nScore + " " + sScore + " " + currentServerNumber, nScore, sScore) + document.getElementById("server").innerHTML;
+            return processSpecialScoreStr(nScore + " " + sScore + " " + currentServerNumber, nScore, sScore,currentServerNumber) + document.getElementById("server").innerHTML;
         }
         else {
-            return processSpecialScoreStr(sScore + " " + nScore + " " + currentServerNumber, sScore, nScore) + document.getElementById("server").innerHTML;
+            return processSpecialScoreStr(sScore + " " + nScore + " " + currentServerNumber, sScore, nScore,currentServerNumber) + document.getElementById("server").innerHTML;
         }
     }
     else {
@@ -410,10 +410,10 @@ function CheckSpecialScore() {
     var modServerNumber = (serverNumber % 4);
     var scoreServerNumber = (modServerNumber % 2) + 1;
 
-    return processSpecialScoreStr(scoreNumbers, score1, score2) + document.getElementById("server").innerHTML;
+        return processSpecialScoreStr(scoreNumbers, score1, score2, scoreServerNumber) + document.getElementById("server").innerHTML;
     }
 }
-function processSpecialScoreStr(scoreNumbers, score1, score2) {
+function processSpecialScoreStr(scoreNumbers, score1, score2, scoreServerNumber) {
     var returnStr = "";
 
     if (scoreNumbers === "1 1 1")
@@ -435,7 +435,7 @@ function processSpecialScoreStr(scoreNumbers, score1, score2) {
         returnStr += "twos on a 1..."
 
     else if (score1 > 2 && score1 == score2 && score1 <= 11 && score2 <= 11)
-        returnStr += numberToStringDic[scoreNumbersArry[0]] + " on a " + scoreServerNumber.toString();
+        returnStr += numberToStringDic[score1] + " on a " + scoreServerNumber.toString();
 
     else if (scoreNumbers === "4 1 1")
         returnStr += "What is the 4 1 1... its"
@@ -466,7 +466,7 @@ function processSpecialScoreStr(scoreNumbers, score1, score2) {
         else
             returnStr = returnStr.replace("2", "two ").replace("2", "Start");
     }
-    else (useV2 && onStart)
+    else if (useV2 == true && onStart == true)
     {
         if (returnStr.split("1").length - 1 < 2)
             returnStr = returnStr.replace("1", "Start");
@@ -771,28 +771,42 @@ function checkDupServerNames() {
     Object.keys(foundNames).forEach(function (key) {
         let o = 1;
         let stoppingPoint = foundNames[key];
-        while (o <= stoppingPoint) {
-            var index = allNames.lastIndexOf(key);
-            switch (index) {
-                case 3:
-                    northServers[0] = northServers[0] + ` (${o})`;
-                    break;
-                case 2:
-                    northServers[1] = northServers[1] + ` (${o})`;
-                    break;
-                case 1:
-                    southServers[0] = southServers[0] + ` (${o})`;
-                    break;
-                case 0:
-                    southServers[1] = southServers[1] + ` (${o})`;
-                    break
-                default:
-                    break;
+        if (stoppingPoint  > 1) {
+            while (o <= stoppingPoint) {
+                var index = allNames.lastIndexOf(key);
+                switch (index) {
+                    case 3:
+                        northServers[0] = northServers[0] + ` (${o})`;
+                        break;
+                    case 2:
+                        northServers[1] = northServers[1] + ` (${o})`;
+                        break;
+                    case 1:
+                        southServers[0] = southServers[0] + ` (${o})`;
+                        break;
+                    case 0:
+                        southServers[1] = southServers[1] + ` (${o})`;
+                        break
+                    default:
+                        break;
+                }
+                o++;
+                delete allNames[index];
             }
-            o++;
-            allNames.splice(index, 1);
         }
     })
     
+}
+
+function GetHistory() {
+    var container = document.getElementById("setHistory");
+    var contentStr = "<ul>";
+    scoreHistory.forEach((row) => {
+        rowJSON = JSON.parse("{" + row + "}");
+        contentStr += `<li>Server: ${rowJSON.Server}, Score: ${rowJSON.Score}</li>`;
+    })
+    contentStr += "</ul>";
+
+    container.innerHTML = contentStr;
 }
 

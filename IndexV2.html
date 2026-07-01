@@ -14,7 +14,7 @@
         <div class="NavCol col-5"><a class="NavLabel greenText" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
         <div id="playerNames" class="overlay">
             <div class="popup">
-                <h2>Enter Player Names</h2>
+                <h2 class="greenText">Enter Player Names</h2>
                 <a class="close" href="#" onclick="AllowKeyPress();checkDupServerNames();SetScoreHTMLV2();">&times;</a>
                 <div class="content">
                     <table class="CourtTable">
@@ -43,7 +43,7 @@
         <div class="NavCol col-5"><a class="NavLabel greenText" href="#controls" onclick="BlockKeyPress()">Controls</a></div>
         <div id="controls" class="overlay">
             <div class="popup">
-                <h2>Controls</h2>
+                <h2 class="greenText">Controls</h2>
                 <a class="close" href="#" onclick="AllowKeyPress()">&times;</a>
                 <div class="content">
                     <div class="contentColFlex">
@@ -61,7 +61,7 @@
         <div class="NavCol col-5"><a class="NavLabel greenText" href="#NH" onclick="BlockKeyPress()">Name History</a></div>
         <div id="NH" class="overlay">
             <div class="popup">
-                <h2>Name History</h2>
+                <h2 class="greenText">Name History</h2>
                 <a class="close" href="#" onclick="AllowKeyPress()">&times;</a>
                 <div class="content">
                     <div id="nameHistory" class="contentColFlex">
@@ -113,7 +113,7 @@
     <datalist id="names">
     </datalist>
     <!--Winner Popup-->
-    <div id="WinnerPopup" class="overlay">
+    <div id="WinnerPopup" class="overlay greenBorder">
         <div class="popup">
             <div class="content">
                 <div class="contentColFlex" id="WinnerText">
@@ -121,20 +121,21 @@
                 </div>
                 <div class="WinnerPopupButtons">
                     <button class='WinnerButton' onclick="window.location = '#';location.reload()">Next Game</button>
+                    <button class='WinnerButton' onclick="GetHistory(); window.location = '#setHistory'">Set History</button>
                     <button class='WinnerButton' onclick="window.location = '#'">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    <!--Winner Popup-->
-    <div id="WinnerPopup" class="overlay">
+    <div id="setHistory" class="overlay greenBorder">
         <div class="popup">
             <div class="content">
-                <div class="contentColFlex" id="WinnerText">
+                <div class="contentColFlex" id="setHistory">
 
                 </div>
                 <div class="WinnerPopupButtons">
                     <button class='WinnerButton' onclick="window.location = '#';location.reload()">Next Game</button>
+                    <button class='WinnerButton' onclick="window.location = '#setHistory'">Set History</button>
                     <button class='WinnerButton' onclick="window.location = '#'">Close</button>
                 </div>
             </div>
