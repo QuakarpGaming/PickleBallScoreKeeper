@@ -531,15 +531,22 @@ function SetScoreHTMLV2() {
     var ServerName = GetServerNameV2();
     document.getElementById("server").innerHTML = `${ServerName} To Serve`
 
-
     //set up the text boxes for the server names
+    var SL = document.getElementById("southLeftSide").value = southServers[isEven(sScore) ? 1 : 0];
+    var SR = document.getElementById("southRightSide").value = southServers[isEven(sScore) ? 0 : 1];
+    var NL = document.getElementById("northLeftSide").value = northServers[isEven(nScore) ? 1 : 0];
+    var NR = document.getElementById("northRightSide").value = northServers[isEven(nScore) ? 0 : 1];
 
-    var SL = document.getElementById("southLeftSide").value = southServers[isEven(sScore) ? 1 : 0] + " " + (southServers[isEven(sScore) ? 1 : 0] == ServerName ? "<--" : "");
-    var SR = document.getElementById("southRightSide").value = southServers[isEven(sScore) ? 0 : 1] + " " + (southServers[isEven(sScore) ? 0 : 1] == ServerName ? "<--" : "");
+    var serverNameInputList = Array.from(document.querySelectorAll(".serverNameBox"));
+    var serverNameInput = serverNameInputList.find(input => input.value === ServerName);
+    var currentServerEl = document.querySelector('.currentServer');
+    if (currentServerEl) {
+        currentServerEl.classList.remove('currentServer');
+    }
+    if (serverNameInput) {
+        serverNameInput.classList.add('currentServer');
+    }
 
-    var NL = document.getElementById("northLeftSide").value = northServers[isEven(nScore) ? 1 : 0] + " " + (northServers[isEven(nScore) ? 1 : 0] == ServerName ? "<--" : "");
-    var NR = document.getElementById("northRightSide").value = northServers[isEven(nScore) ? 0 : 1] + " " + (northServers[isEven(nScore) ? 0 : 1] == ServerName ? "<--" : "");
-    
     //set up team names
     if(setTeamNames)
     {
