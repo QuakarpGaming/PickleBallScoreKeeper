@@ -205,6 +205,13 @@ input[list]::-webkit-calendar-picker-indicator {
     align-content: center;
     justify-content: space-around;
 }
+.popupText
+{
+    font-size: 2vw;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-around;
+}
 
 /****************/
 /*Columns widths*/

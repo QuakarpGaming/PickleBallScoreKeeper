@@ -11,7 +11,7 @@
     <nav class="greenBorder">
         <div class="NavCol col-5"><label class="NavLabel greenText">Play Till: <input type="number" class="NavInput" id="playTill" value="11" onfocus="BlockKeyPress()" onblur="SetSessionStorage('PLAYTILL', this.value); AllowKeyPress()"></label></div>
         <div class="NavCol col-5"><label class="NavLabel greenText">Win By 2: <input type="checkbox" class="NavInput" id="winBy2" checked onchange="SetSessionStorage('WINBY2',this.checked)"></label></div>
-        <div class="NavCol col-5"><a class="NavLabel greenText" href="#playerNames" onclick="BlockKeyPress()">Player Names</a></div>
+        <div class="NavCol col-5"><a class="NavLabel greenText" href="#playerNames" onclick="BlockKeyPress(); setTeamNames=true;">Player Names</a></div>
         <div id="playerNames" class="overlay">
             <div class="popup">
                 <h2 class="greenText">Enter Player Names</h2>
@@ -78,10 +78,10 @@
             <thead>
                 <tr class="">
                     <th colspan="2" class="cell-left container-15h">
-                        <label class="greenText NavLabel ScoreV2ScoreLabel">South Team<input class="greenInput NavInput ScoreV2ScoreInput" type="number" id="southScore" readonly disabled value="0" /></label>
+                        <label class="greenText NavLabel ScoreV2ScoreLabel"><p id="southTeamName">South Team:</p><input class="greenInput NavInput ScoreV2ScoreInput" type="number" id="southScore" readonly disabled value="0" /></label>
                     </th>
                     <th colspan="2" class="cell-right container-15h">
-                        <label class="greenText NavLabel ScoreV2ScoreLabel">North Team<input class="greenInput NavInput ScoreV2ScoreInput" type="number" id="northScore" readonly disabled value="0" /></label>
+                        <label class="greenText NavLabel ScoreV2ScoreLabel"><p id="northTeamName">North Team:</p><input class="greenInput NavInput ScoreV2ScoreInput" type="number" id="northScore" readonly disabled value="0" /></label>
                     </th>
                 </tr>
             </thead>

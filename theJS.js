@@ -525,6 +525,7 @@ var lastSideOutSScore = 0;
 var onStart = true;
 var serverNameSet = false;
 var scoreHistory = new Array();
+var setTeamNames = false;
 function SetScoreHTMLV2() {
     //set up the server text box at the bottom of the screen
     var ServerName = GetServerNameV2();
@@ -539,6 +540,12 @@ function SetScoreHTMLV2() {
     var NL = document.getElementById("northLeftSide").value = northServers[isEven(nScore) ? 1 : 0] + " " + (northServers[isEven(nScore) ? 1 : 0] == ServerName ? "<--" : "");
     var NR = document.getElementById("northRightSide").value = northServers[isEven(nScore) ? 0 : 1] + " " + (northServers[isEven(nScore) ? 0 : 1] == ServerName ? "<--" : "");
     
+    //set up team names
+    if(setTeamNames)
+    {
+        document.getElementById("southTeamName").innerHTML = `${southServers[0]} & ${southServers[1]}:`;
+        document.getElementById("northTeamName").innerHTML = `${northServers[0]} & ${northServers[1]}:`;
+    }
 }
 function GetServerNameV2() {
     var serverNumberSlotToShow = 0;
@@ -800,7 +807,7 @@ function checkDupServerNames() {
 
 function GetHistory() {
     var container = document.getElementById("setHistory");
-    var contentStr = "<ul>";
+    var contentStr = "<ul class='popupText'>";
     scoreHistory.forEach((row) => {
         rowJSON = JSON.parse("{" + row + "}");
         contentStr += `<li>Server: ${rowJSON.Server}, Score: ${rowJSON.Score}</li>`;
