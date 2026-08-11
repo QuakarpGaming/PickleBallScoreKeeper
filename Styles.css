@@ -346,3 +346,11 @@ input[list]::-webkit-calendar-picker-indicator {
     margin-bottom: auto;
     align-items: center;
 }
+.align-right {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
