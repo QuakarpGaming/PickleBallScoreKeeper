@@ -336,7 +336,7 @@ input[list]::-webkit-calendar-picker-indicator {
 .ScoreV2ScoreInput {
     border: 0 !important;
     height: 23vh;
-    width: 23vh;
+    width: 25vh;
     font-size: 23vh;
 }
 .ScoreV2ScoreLabel {
