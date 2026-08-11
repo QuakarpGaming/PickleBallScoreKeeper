@@ -361,4 +361,6 @@ input[list]::-webkit-calendar-picker-indicator {
     display: inline-block;
     padding: 0.2em 0.4em;
     border-radius: 0.25em;
+    text-align: center !important;
+
 }
